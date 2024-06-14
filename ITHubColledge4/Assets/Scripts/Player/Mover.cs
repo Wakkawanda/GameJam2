@@ -1,4 +1,5 @@
 using UnityEngine;
+using Zenject;
 
 namespace Player
 {
@@ -10,6 +11,7 @@ namespace Player
         private PlayerInput _playerInput;
         private Vector2 _direction;
 
+        [Inject]
         public void Construct(PlayerInput playerInput)
         {
             _playerInput = playerInput;
@@ -22,7 +24,7 @@ namespace Player
 
         private void FixedUpdate()
         {
-            _rigidbody2D.MovePosition(_direction * _speed * Time.fixedDeltaTime);
+            _rigidbody2D.MovePosition(_rigidbody2D.position + _direction * _speed * Time.fixedDeltaTime);
         }
     }
 }
