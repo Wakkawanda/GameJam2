@@ -1,7 +1,7 @@
 using UnityEngine;
 using Zenject;
 
-namespace Player
+namespace States
 {
     public class Mover : MonoBehaviour
     {
