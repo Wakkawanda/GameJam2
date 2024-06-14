@@ -7,14 +7,12 @@ namespace States
     public class MovingState : UnitStateBase
     {
         private readonly PlayerInput _playerInput;
-        private readonly Player _player;
-        private Vector2 _direction;
-        
+
         private CompositeDisposable _disposable;
+        private Vector2 _direction;
 
         public MovingState(Player player, PlayerInput playerInput) : base(player)
         {
-            _player = player;
             _playerInput = playerInput;
         }
 
@@ -49,7 +47,7 @@ namespace States
 
         private void Mover()
         {
-            _player.Rigidbody2D.MovePosition(_player.Rigidbody2D.position + _direction * _player.Speed * Time.fixedDeltaTime);
+            Player.Rigidbody2D.MovePosition(Player.Rigidbody2D.position + _direction * Player.Speed * Time.fixedDeltaTime);
         }
     }
 }

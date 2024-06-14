@@ -1,37 +1,36 @@
-using Zenject;
+using System.Collections;
+using System.Collections.Generic;
+using Scripts;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace weed
 {
-    public class Barman : MonoInstaller
+    public class Barman : MonoBehaviour
     {
-	    // public Player player;
-        public float price;
-        void Start() 
-        {
-            // not sure what could be here; maybe edit price based on the player's variable of how far they've fooled around
+        [SerializeField] private List<int> _prices;
+        private Wallet _wallet;
 
+        public void Construct(Wallet wallet)
+        {
+            _wallet = wallet;
         }
 
-        public override void CheckIfEnough()
+        public void CheckIfEnough()
         {
-            /*
-            if (player.money >= price) 
+            if (_wallet.GetMoneyValue() >= _prices[0]) //todo change counter
             {
-                player.money -= price;
-                player.PlayAnimation("drinking"); // just a shitty placeholder on what it should theoretically do
-                
+                _wallet.RemoveMoney(_prices[0]); 
+                Debug.Log("player animation"); //todo event for player
             }
 
-            waitForInputAndSendToHell();
-            */
+            StartCoroutine(WaitForInputAndSendToHell());
         }
 
-        public IEnumerator waitForInputAndSendToHell() 
+        public IEnumerator WaitForInputAndSendToHell()
         {
-            while (Input.GetKeyDown(KeyCode.E))
-            {
-                yield return null;
-            }
+            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
+            
             SceneManager.LoadScene("Game");
         }
     }
