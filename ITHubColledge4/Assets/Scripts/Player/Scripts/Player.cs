@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using States;
 using UniRx;
@@ -17,7 +18,11 @@ namespace Scripts
         [SerializeField] private Animator _animator;
         [SerializeField] private float _speed;
         [SerializeField] private List<Image> _hearts;
-        
+        public float hurtTimer;
+        public bool isHurt = false;
+        public float radiusCheck;
+        public LayerMask enemyLayer;
+
         private StateMachine _stateMachine;
         private CompositeDisposable _disposable;
         private PlayerInput _playerInput;
@@ -70,27 +75,43 @@ namespace Scripts
                 .AddTo(_disposable);
         }
 
+        private void Damage() {
+            StartCoroutine("DamageTimer");
+            Image image = _hearts.LastOrDefault(heart => heart.gameObject.activeSelf);
+            
+            if (image != null) 
+                image.gameObject.SetActive(false);
+            
+            image = _hearts.LastOrDefault(heart => heart.gameObject.activeSelf);
+
+            if (image == null)
+            {
+                GameOver();
+            }
+        }
+
         private void OnCollisionEnter2D(Collision2D other)
         {
-            if (other.gameObject.layer == 6)
+            if (other.gameObject.layer == 6 && !isHurt)
             {
-                Image image = _hearts.LastOrDefault(heart => heart.gameObject.activeSelf);
-                
-                if (image != null) 
-                    image.gameObject.SetActive(false);
-                
-                image = _hearts.LastOrDefault(heart => heart.gameObject.activeSelf);
-
-                if (image == null)
-                {
-                    GameOver();
-                }
+                Damage();
             }
         }
 
         public void ChangeState(UnitStateBase unit)
         {
             _stateMachine.ChangeState(unit);
+        }
+
+        public IEnumerator DamageTimer() 
+        {
+            isHurt = true;
+            yield return new WaitForSeconds(hurtTimer);
+            isHurt = false;
+            Collider2D[] groundColliders = Physics2D.OverlapCircleAll(transform.position,
+                radiusCheck, 
+                enemyLayer);
+            if (groundColliders.Length >= 1) StartCoroutine("DamageTimer");
         }
 
         private void OnUpdate()
