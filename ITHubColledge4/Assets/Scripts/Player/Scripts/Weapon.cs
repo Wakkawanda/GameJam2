@@ -43,7 +43,10 @@ namespace Scripts
 
                 foreach (var enemy in enemiesHit)
                 {
-                    enemy.GetComponent<EnemyHealth>().TakeDamage(_damage);
+                    if (enemy.TryGetComponent(out EnemyTemplate health))
+                    {
+                        health.TakeDamage(_damage);
+                    }
                 }
 
                 timer += Time.deltaTime;

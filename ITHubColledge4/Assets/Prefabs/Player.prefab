@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 8819199403206142498}
   - component: {fileID: 2136991256644693000}
   - component: {fileID: 6296503502213727174}
-  - component: {fileID: 5593592293328221988}
+  - component: {fileID: 7899398200880208730}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -238,7 +238,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rigidbody2D: {fileID: 8819199403206142498}
   _weapon: {fileID: 5968013002756045744}
-  _animator: {fileID: 5593592293328221988}
+  _animator: {fileID: 7899398200880208730}
   _speed: 10
   _hearts:
   - {fileID: 0}
@@ -290,7 +290,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.72427416, y: 1.2411108}
   m_EdgeRadius: 0
---- !u!95 &5593592293328221988
+--- !u!95 &7899398200880208730
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
