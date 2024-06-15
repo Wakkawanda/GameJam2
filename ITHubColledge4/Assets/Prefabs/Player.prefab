@@ -104,7 +104,7 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
-  attackRange: 0.5
+  attackSize: {x: 0.5, y: 1}
   damage: 10
 --- !u!1 &8843748140632508457
 GameObject:
@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 3157880269293970252}
   - component: {fileID: 8819199403206142498}
   - component: {fileID: 6417147925170273648}
-  - component: {fileID: 2421951190944037246}
+  - component: {fileID: 2136991256644693000}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -260,7 +260,7 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
---- !u!114 &2421951190944037246
+--- !u!114 &2136991256644693000
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
