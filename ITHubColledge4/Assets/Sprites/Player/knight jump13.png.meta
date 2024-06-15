@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: bbcc9920410d91d4482412b2dc3d6f12
+guid: 7105b3094a0d6784b92f5f74ae93badc
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3230762074191490896
-    second: sword_main_0
+      213: 1982402807509744893
+    second: knight jump13_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,12 +100,12 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: sword_main_0
+      name: knight jump13_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 10
+        x: 6
+        y: 38
+        width: 38
         height: 25
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 05fecf93df8f5dc20800000000000000
-      internalID: 3230762074191490896
+      spriteID: dfcfa57a9d8e28b10800000000000000
+      internalID: 1982402807509744893
       vertices: []
       indices: 
       edges: []
@@ -133,7 +133,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      sword_main_0: 3230762074191490896
+      knight jump13_0: 1982402807509744893
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
