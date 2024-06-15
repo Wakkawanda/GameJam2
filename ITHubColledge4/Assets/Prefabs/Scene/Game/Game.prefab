@@ -47,7 +47,6 @@ MonoBehaviour:
   enemyList:
   - {fileID: 8587422548803487575, guid: e44530045ac529341bfa228098cf78ec, type: 3}
   - {fileID: 4089933368160669453, guid: 9098227a3cf4c5745acee8c165a1c24b, type: 3}
-  - {fileID: 7150223262118717540, guid: eb61f564da972224cbf8b53677eb5564, type: 3}
   - {fileID: 3230037965167663670, guid: 486d60c5c7fdc4b4fa55efa29f8f2fd8, type: 3}
   timeoutInSeconds: 5
   radiusOfPlayerSafety: 5
