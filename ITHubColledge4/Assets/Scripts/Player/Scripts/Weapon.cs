@@ -1,4 +1,3 @@
-using System;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Enemy.Scripts;
@@ -15,7 +14,7 @@ namespace Scripts
         [SerializeField] private Player _player;
         [SerializeField] private Transform _attackPoint;
         [SerializeField] private LayerMask _enemyLayer;
-        [SerializeField] private Vector2 _attackSize = new Vector2(0.5f, 1f);
+        [SerializeField] private float _attackSize = 5;
         [SerializeField] private int _damage = 10;
 
         public bool IsAttack { get; set; }
@@ -23,31 +22,38 @@ namespace Scripts
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireCube(_attackPoint.position, _attackSize);
-
-            Gizmos.DrawLine(_attackPoint.position, _attackPoint.position + new Vector3(-_attackSize.x / 2, 0, 0));
-            Gizmos.DrawLine(_attackPoint.position, _attackPoint.position + new Vector3(_attackSize.x / 2, 0, 0));
-            Gizmos.DrawLine(_attackPoint.position, _attackPoint.position + new Vector3(0, -_attackSize.y / 2, 0));
-            Gizmos.DrawLine(_attackPoint.position, _attackPoint.position + new Vector3(0, _attackSize.y / 2, 0));
+            Gizmos.DrawWireSphere(_attackPoint.position, _attackSize);
+            
+            Gizmos.DrawLine(_attackPoint.position, _attackPoint.position + new Vector3(-_attackSize * 2, 0, 0));
+            Gizmos.DrawLine(_attackPoint.position, _attackPoint.position + new Vector3(_attackSize * 2, 0, 0));
         }
 
         public async UniTaskVoid Attack()
         {
-            transform.DOLocalRotate(_endAttackValue, 0.2f);
-            transform.DOLocalMove(_endPositionAttackValue, 0.2f);
-            Collider2D[] enemiesHit = Physics2D.OverlapBoxAll(_attackPoint.position, _attackSize, 0, _enemyLayer);
+            float timer = 0;
+            float targetTime = 0.2f;
+            
+            transform.DOLocalRotate(_endAttackValue, targetTime);
+            transform.DOLocalMove(_endPositionAttackValue, targetTime);
 
-            foreach (var enemy in enemiesHit)
+            while (timer < targetTime)
             {
-                enemy.GetComponent<EnemyHealth>().TakeDamage(_damage);
-            }
+                Collider2D[] enemiesHit = Physics2D.OverlapCircleAll(_attackPoint.position, _attackSize, _enemyLayer);
 
-            await UniTask.Delay(TimeSpan.FromSeconds(0.2f));
+                foreach (var enemy in enemiesHit)
+                {
+                    enemy.GetComponent<EnemyHealth>().TakeDamage(_damage);
+                }
+
+                timer += Time.deltaTime;
+
+                await UniTask.Yield();
+            }
             
             IsAttack = false;
             
-            transform.DOLocalRotate(_startAttackValue, 0.2f);
-            transform.DOLocalMove(_startPositionAttackValue, 0.2f);
+            transform.DOLocalRotate(_startAttackValue, targetTime);
+            transform.DOLocalMove(_startPositionAttackValue, targetTime);
         }
     }
 }
