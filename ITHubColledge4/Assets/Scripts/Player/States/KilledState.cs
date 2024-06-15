@@ -12,6 +12,7 @@ namespace States
         public override void OnEnter()
         {
             Debug.Log("Kill");
+            Player.ChangeState(null);
         }
 
         public override void OnUpdate()
