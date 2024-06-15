@@ -29,6 +29,10 @@ namespace Enemy
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
         {
+            if (player == null) {
+                string plr = "Player";
+                player = GameObject.Find(plr).GetComponent<Player>(); // its gamejab
+            }
             //enemyHealth = new();
             //enemyHealth.die.AddListener(Destroy);
         }
