@@ -30,6 +30,9 @@ namespace Scripts
         public IdleState IdleState { get; private set; }
         public MovingState MovingState { get; private set; }
         public AttackState AttackState { get; private set; }
+        public JumpFranticState JumpFranticState { get; private set; }
+        public SmokeState SmokeState { get; private set; }
+        public VortexState VortexState { get; private set; }
         public KilledState KilledState { get; private set; }
         
         [Inject]
@@ -42,11 +45,17 @@ namespace Scripts
         private void OnEnable()
         {
             _playerInput.Player.Attack.canceled += Attack;
+            _playerInput.Player.JumpFrantic.canceled += JumpFrantic;
+            _playerInput.Player.Smoke.canceled += Smoke;
+            _playerInput.Player.Vortex.canceled += Vortex;
         }
 
         private void OnDisable()
         {
             _playerInput.Player.Attack.canceled -= Attack;
+            _playerInput.Player.JumpFrantic.canceled -= JumpFrantic;
+            _playerInput.Player.Smoke.canceled -= Smoke;
+            _playerInput.Player.Vortex.canceled -= Vortex;
         }
 
         private void Start()
@@ -100,6 +109,9 @@ namespace Scripts
             IdleState = new IdleState(this, _playerInput);
             MovingState = new MovingState(this, _playerInput);
             AttackState = new AttackState(this, _playerInput, Weapon);
+            JumpFranticState = new JumpFranticState(this, _playerInput);
+            SmokeState = new SmokeState(this, _playerInput);
+            VortexState = new VortexState(this, _playerInput);
             KilledState = new KilledState(this);
 
             _stateMachine.ChangeState(IdleState);
@@ -108,6 +120,21 @@ namespace Scripts
         private void Attack(InputAction.CallbackContext obj)
         {
             ChangeState(AttackState);
+        }
+
+        private void JumpFrantic(InputAction.CallbackContext obj)
+        {
+            ChangeState(JumpFranticState);
+        }
+        
+        private void Smoke(InputAction.CallbackContext obj)
+        {
+            ChangeState(SmokeState);
+        }
+       
+        private void Vortex(InputAction.CallbackContext obj)
+        {
+            ChangeState(VortexState);
         }
 
         private void GameOver()
