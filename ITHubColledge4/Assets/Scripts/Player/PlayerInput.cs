@@ -45,6 +45,33 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Smoke"",
+                    ""type"": ""Button"",
+                    ""id"": ""e557d73f-8b25-479d-b536-7d7765a589fe"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Vortex"",
+                    ""type"": ""Button"",
+                    ""id"": ""dc867495-eb23-460d-acd6-8a3415e04d92"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""JumpFrantic"",
+                    ""type"": ""Button"",
+                    ""id"": ""cb729cbc-8137-4b29-9b8d-6628418bd092"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -113,6 +140,39 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""Attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""812ac58b-ec19-4b15-8939-d1228795ac09"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""JumpFrantic"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5596250d-88de-43d9-8987-2e400192838e"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Smoke"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dc4803c0-c783-4e8c-86f2-b0375d63862d"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Vortex"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -123,6 +183,9 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
+        m_Player_Smoke = m_Player.FindAction("Smoke", throwIfNotFound: true);
+        m_Player_Vortex = m_Player.FindAction("Vortex", throwIfNotFound: true);
+        m_Player_JumpFrantic = m_Player.FindAction("JumpFrantic", throwIfNotFound: true);
     }
 
     ~@PlayerInput()
@@ -191,12 +254,18 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Attack;
+    private readonly InputAction m_Player_Smoke;
+    private readonly InputAction m_Player_Vortex;
+    private readonly InputAction m_Player_JumpFrantic;
     public struct PlayerActions
     {
         private @PlayerInput m_Wrapper;
         public PlayerActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Attack => m_Wrapper.m_Player_Attack;
+        public InputAction @Smoke => m_Wrapper.m_Player_Smoke;
+        public InputAction @Vortex => m_Wrapper.m_Player_Vortex;
+        public InputAction @JumpFrantic => m_Wrapper.m_Player_JumpFrantic;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -212,6 +281,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Attack.started += instance.OnAttack;
             @Attack.performed += instance.OnAttack;
             @Attack.canceled += instance.OnAttack;
+            @Smoke.started += instance.OnSmoke;
+            @Smoke.performed += instance.OnSmoke;
+            @Smoke.canceled += instance.OnSmoke;
+            @Vortex.started += instance.OnVortex;
+            @Vortex.performed += instance.OnVortex;
+            @Vortex.canceled += instance.OnVortex;
+            @JumpFrantic.started += instance.OnJumpFrantic;
+            @JumpFrantic.performed += instance.OnJumpFrantic;
+            @JumpFrantic.canceled += instance.OnJumpFrantic;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -222,6 +300,15 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
             @Attack.started -= instance.OnAttack;
             @Attack.performed -= instance.OnAttack;
             @Attack.canceled -= instance.OnAttack;
+            @Smoke.started -= instance.OnSmoke;
+            @Smoke.performed -= instance.OnSmoke;
+            @Smoke.canceled -= instance.OnSmoke;
+            @Vortex.started -= instance.OnVortex;
+            @Vortex.performed -= instance.OnVortex;
+            @Vortex.canceled -= instance.OnVortex;
+            @JumpFrantic.started -= instance.OnJumpFrantic;
+            @JumpFrantic.performed -= instance.OnJumpFrantic;
+            @JumpFrantic.canceled -= instance.OnJumpFrantic;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -243,5 +330,8 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
+        void OnSmoke(InputAction.CallbackContext context);
+        void OnVortex(InputAction.CallbackContext context);
+        void OnJumpFrantic(InputAction.CallbackContext context);
     }
 }
