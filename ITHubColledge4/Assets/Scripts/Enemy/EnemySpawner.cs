@@ -33,17 +33,15 @@ public class EnemySpawner : MonoBehaviour
         int enemyIndex = RandomBetweenFloor(0, enemyList.Count);
         GameObject enemyToSpawn = enemyList[enemyIndex]; 
         failSpawn = true; 
-        do {
-            Vector3 spot = RandomBetweenFloor(point1, point2);
-            failSpawn = CheckForPlayer(spot);
-            if (!failSpawn) 
-            {
-                Instantiate(enemyToSpawn, spot, Quaternion.identity, this.transform);
-            };
-            yield return new WaitForSeconds(timeoutInSeconds);
+        Vector3 spot = RandomBetweenFloor(point1, point2);
+        failSpawn = CheckForPlayer(spot);
+        if (!failSpawn) 
+        {
+            Instantiate(enemyToSpawn, spot, Quaternion.identity, this.transform);
+        }
+        yield return new WaitForSeconds(timeoutInSeconds);
 
-            failSpawn = true;
-        } while (failSpawn);
+        failSpawn = true;
     }
 
     int RandomBetweenFloor(float min, float max) 
@@ -65,6 +63,6 @@ public class EnemySpawner : MonoBehaviour
         Collider2D[] groundColliders = Physics2D.OverlapCircleAll(here,
             radiusOfPlayerSafety, 
             layer);
-        return groundColliders.Length > 1;
+        return groundColliders.Length > 0;
     }
 }
