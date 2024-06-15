@@ -32,6 +32,15 @@ namespace States
         public override void OnUpdate()
         {
             _direction = _playerInput.Player.Move.ReadValue<Vector2>();
+
+            if (_direction.x < 0)
+            {
+                Player.transform.localScale = new Vector3(-1, 1, 1);
+            }
+            else if (_direction.x > 0)
+            {
+                Player.transform.localScale = Vector3.one;
+            }
             
             if (_playerInput.Player.Move.ReadValue<Vector2>() == Vector2.zero)
             {

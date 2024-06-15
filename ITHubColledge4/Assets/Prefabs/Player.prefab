@@ -26,13 +26,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6515306234300736415}
   serializedVersion: 2
-  m_LocalRotation: {x: 1, y: 0, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: -1.13, z: 0.0027001323}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1, y: 0.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5998776398695110653}
-  m_LocalEulerAnglesHint: {x: 180, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7481386728115048489
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -100,12 +100,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7289cafc5984b84a30a03c96f22c6db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackPoint: {fileID: 7741024729873415840}
-  enemyLayer:
+  _startAttackValue: {x: 0, y: 0, z: 0}
+  _startPositionAttackValue: {x: 1, y: 0.3, z: 0}
+  _endAttackValue: {x: 0, y: 0, z: -135}
+  _endPositionAttackValue: {x: 1, y: -0.83, z: 0}
+  _player: {fileID: 2136991256644693000}
+  _attackPoint: {fileID: 7741024729873415840}
+  _enemyLayer:
     serializedVersion: 2
     m_Bits: 64
-  attackSize: {x: 0.5, y: 1}
-  damage: 10
+  _attackSize: {x: 2, y: 2}
+  _damage: 10
 --- !u!1 &8843748140632508457
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,3 +1,6 @@
+using System;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using Enemy.Scripts;
 using UnityEngine;
 
@@ -5,35 +8,46 @@ namespace Scripts
 {
     public class Weapon : MonoBehaviour
     {
-        public Transform attackPoint;
-        public LayerMask enemyLayer;
-        public Vector2 attackSize = new Vector2(0.5f, 1f); // Width and height of the rectangle
-        public int damage = 10;
+        [SerializeField] private Vector3 _startAttackValue;
+        [SerializeField] private Vector3 _startPositionAttackValue;
+        [SerializeField] private Vector3 _endAttackValue;
+        [SerializeField] private Vector3 _endPositionAttackValue;
+        [SerializeField] private Player _player;
+        [SerializeField] private Transform _attackPoint;
+        [SerializeField] private LayerMask _enemyLayer;
+        [SerializeField] private Vector2 _attackSize = new Vector2(0.5f, 1f);
+        [SerializeField] private int _damage = 10;
 
         public bool IsAttack { get; set; }
 
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireCube(attackPoint.position, attackSize);
+            Gizmos.DrawWireCube(_attackPoint.position, _attackSize);
 
-            // Optionally draw lines to visualize the extent of the attack
-            Gizmos.DrawLine(attackPoint.position, attackPoint.position + new Vector3(-attackSize.x / 2, 0, 0));
-            Gizmos.DrawLine(attackPoint.position, attackPoint.position + new Vector3(attackSize.x / 2, 0, 0));
-            Gizmos.DrawLine(attackPoint.position, attackPoint.position + new Vector3(0, -attackSize.y / 2, 0));
-            Gizmos.DrawLine(attackPoint.position, attackPoint.position + new Vector3(0, attackSize.y / 2, 0));
+            Gizmos.DrawLine(_attackPoint.position, _attackPoint.position + new Vector3(-_attackSize.x / 2, 0, 0));
+            Gizmos.DrawLine(_attackPoint.position, _attackPoint.position + new Vector3(_attackSize.x / 2, 0, 0));
+            Gizmos.DrawLine(_attackPoint.position, _attackPoint.position + new Vector3(0, -_attackSize.y / 2, 0));
+            Gizmos.DrawLine(_attackPoint.position, _attackPoint.position + new Vector3(0, _attackSize.y / 2, 0));
         }
 
-        public void Attack()
+        public async UniTaskVoid Attack()
         {
-            Collider2D[] enemiesHit = Physics2D.OverlapBoxAll(attackPoint.position, attackSize, 0, enemyLayer);
+            transform.DOLocalRotate(_endAttackValue, 0.2f);
+            transform.DOLocalMove(_endPositionAttackValue, 0.2f);
+            Collider2D[] enemiesHit = Physics2D.OverlapBoxAll(_attackPoint.position, _attackSize, 0, _enemyLayer);
 
             foreach (var enemy in enemiesHit)
             {
-                enemy.GetComponent<EnemyHealth>().TakeDamage(damage);
+                enemy.GetComponent<EnemyHealth>().TakeDamage(_damage);
             }
 
+            await UniTask.Delay(TimeSpan.FromSeconds(0.2f));
+            
             IsAttack = false;
+            
+            transform.DOLocalRotate(_startAttackValue, 0.2f);
+            transform.DOLocalMove(_startPositionAttackValue, 0.2f);
         }
     }
 }

@@ -1,5 +1,4 @@
 using Scripts;
-using UniRx;
 using UnityEngine;
 
 namespace States
@@ -21,7 +20,7 @@ namespace States
         {
             //todo animation attack
             _weapon.IsAttack = true;
-            _weapon.Attack();
+            _weapon.Attack().Forget();
             Debug.Log("Attack");
         }
 
