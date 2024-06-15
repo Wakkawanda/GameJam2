@@ -1,7 +1,11 @@
+using System.Collections.Generic;
+using System.Linq;
 using States;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Zenject;
 
 namespace Scripts
@@ -11,6 +15,7 @@ namespace Scripts
         [SerializeField] private Rigidbody2D _rigidbody2D;
         [SerializeField] private Weapon _weapon;
         [SerializeField] private float _speed;
+        [SerializeField] private List<Image> _hearts;
         
         private StateMachine _stateMachine;
         private CompositeDisposable _disposable;
@@ -55,6 +60,24 @@ namespace Scripts
                 .AddTo(_disposable);
         }
 
+        private void OnCollisionEnter2D(Collision2D other)
+        {
+            if (other.gameObject.layer == 6)
+            {
+                Image image = _hearts.LastOrDefault(heart => heart.gameObject.activeSelf);
+                
+                if (image != null) 
+                    image.gameObject.SetActive(false);
+                
+                image = _hearts.LastOrDefault(heart => heart.gameObject.activeSelf);
+
+                if (image == null)
+                {
+                    GameOver();
+                }
+            }
+        }
+
         public void ChangeState(UnitStateBase unit)
         {
             _stateMachine.ChangeState(unit);
@@ -85,6 +108,11 @@ namespace Scripts
         private void Attack(InputAction.CallbackContext obj)
         {
             ChangeState(AttackState);
+        }
+
+        private void GameOver()
+        {
+            SceneManager.LoadScene("Tavern");
         }
     }
 }

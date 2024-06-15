@@ -227,7 +227,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
   m_Constraints: 4
 --- !u!114 &2136991256644693000
 MonoBehaviour:
@@ -244,6 +244,11 @@ MonoBehaviour:
   _rigidbody2D: {fileID: 8819199403206142498}
   _weapon: {fileID: 5968013002756045744}
   _speed: 10
+  _hearts:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!61 &6296503502213727174
 BoxCollider2D:
   m_ObjectHideFlags: 0
