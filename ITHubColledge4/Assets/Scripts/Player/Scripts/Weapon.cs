@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Enemy;
 using Enemy.Scripts;
 using UnityEngine;
 
