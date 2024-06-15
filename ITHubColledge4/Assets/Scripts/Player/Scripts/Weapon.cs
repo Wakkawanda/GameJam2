@@ -16,7 +16,6 @@ namespace Scripts
         [SerializeField] private Transform _attackPoint;
         [SerializeField] private LayerMask _enemyLayer;
         [SerializeField] private float _attackSize = 5;
-        [SerializeField] private int _damage = 10;
 
         public bool IsAttack { get; set; }
 
@@ -45,7 +44,7 @@ namespace Scripts
                 {
                     if (enemy.TryGetComponent(out EnemyTemplate health))
                     {
-                        health.TakeDamage(_damage);
+                        health.TakeDamage(0);
                     }
                 }
 

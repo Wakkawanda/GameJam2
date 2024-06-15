@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
+using Enemy;
 using States;
 using UniRx;
 using UnityEngine;
@@ -18,6 +19,9 @@ namespace Scripts
         [SerializeField] private Animator _animator;
         [SerializeField] private float _speed;
         [SerializeField] private List<Image> _hearts;
+        [SerializeField] private Transform _attackPoint;
+        [SerializeField] private LayerMask _enemyLayer;
+        [SerializeField] private float _attackSize = 5;
         public float hurtTimer;
         public bool isHurt = false;
         public float radiusCheck = 3f;
@@ -97,6 +101,15 @@ namespace Scripts
                 TakeDamage();
             }
         }
+        
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(_attackPoint.position, _attackSize);
+            
+            Gizmos.DrawLine(_attackPoint.position, _attackPoint.position + new Vector3(-_attackSize * 2, 0, 0));
+            Gizmos.DrawLine(_attackPoint.position, _attackPoint.position + new Vector3(_attackSize * 2, 0, 0));
+        }
 
         public void ChangeState(UnitStateBase unit)
         {
@@ -134,7 +147,7 @@ namespace Scripts
             IdleState = new IdleState(this, _playerInput, _animator);
             MovingState = new MovingState(this, _playerInput, _animator);
             AttackState = new AttackState(this, _playerInput, Weapon);
-            JumpFranticState = new JumpFranticState(this, _playerInput);
+            JumpFranticState = new JumpFranticState(this, _playerInput, _animator);
             SmokeState = new SmokeState(this, _playerInput);
             VortexState = new VortexState(this, _playerInput);
             KilledState = new KilledState(this);
@@ -165,6 +178,27 @@ namespace Scripts
         private void GameOver()
         {
             SceneManager.LoadScene("Tavern");
+        }
+
+        public void AttackJumpFrantic()
+        {
+            Collider2D[] enemiesHit = Physics2D.OverlapCircleAll(_attackPoint.position, _attackSize, _enemyLayer);
+
+            foreach (var enemy in enemiesHit)
+            {
+                if (enemy.TryGetComponent(out EnemyTemplate health))
+                {
+                    health.TakeDamage(0);
+                }
+            }
+            Debug.Log("Attack JumpFrantic");
+        }
+
+        public void StopJumpFrantic()
+        {
+            Weapon.gameObject.SetActive(true);
+            ChangeState(MovingState);
+            Debug.Log("Stop JumpFrantic");
         }
     }
 }
