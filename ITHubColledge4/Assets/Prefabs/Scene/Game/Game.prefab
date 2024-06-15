@@ -795,6 +795,7 @@ GameObject:
   - component: {fileID: 4439621949976555252}
   - component: {fileID: 9134382343162583704}
   - component: {fileID: 1058343100142937310}
+  - component: {fileID: 6988913999324909880}
   m_Layer: 0
   m_Name: Money
   m_TagString: Untagged
@@ -849,7 +850,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 999
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d2db2e2be534b0c4f8c86ec32f7c6cd9, type: 2}
   m_sharedMaterial: {fileID: 184114110174699203, guid: d2db2e2be534b0c4f8c86ec32f7c6cd9, type: 2}
@@ -920,6 +921,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6988913999324909880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4630251947266418864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6351d1c412ae4fe0a31c8558b462e044, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _money: {fileID: 1058343100142937310}
 --- !u!1 &8489652238417778139
 GameObject:
   m_ObjectHideFlags: 0
