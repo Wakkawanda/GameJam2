@@ -104,7 +104,7 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
-  attackRange: 0.5
+  attackSize: {x: 0.5, y: 1}
   damage: 10
 --- !u!1 &8843748140632508457
 GameObject:
@@ -269,7 +269,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8843748140632508457}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f987cae1407ccd442bf61dd7e022dafe, type: 3}
+  m_Script: {fileID: 11500000, guid: bfa6f39dc28c4c129cc3dc665ed59266, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _rigidbody2D: {fileID: 8819199403206142498}
