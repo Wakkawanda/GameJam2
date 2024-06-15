@@ -108,7 +108,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _attackSize: 0.5
-  _damage: 10
 --- !u!1 &8843748140632508457
 GameObject:
   m_ObjectHideFlags: 0
@@ -246,6 +245,11 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  _attackPoint: {fileID: 5998776398695110653}
+  _enemyLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  _attackSize: 2.07
   hurtTimer: 1
   isHurt: 0
   radiusCheck: 1.5

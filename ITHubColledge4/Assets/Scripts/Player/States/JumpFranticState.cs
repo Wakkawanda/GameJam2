@@ -6,17 +6,20 @@ namespace States
     public class JumpFranticState : UnitStateBase
     {
         private readonly PlayerInput _playerInput;
+        private readonly Animator _animator;
 
-        public JumpFranticState(Player player, PlayerInput playerInput) : base(player)
+        public JumpFranticState(Player player, PlayerInput playerInput, Animator animator) : base(player)
         {
             _playerInput = playerInput;
+            _animator = animator;
         }
 
         public override void OnEnter()
         {
             //todo animation attack
             Debug.Log("JumpFranticState");
-            Player.ChangeState(Player.MovingState);
+            _animator.SetTrigger("JumpFrantic");
+            Player.Weapon.gameObject.SetActive(false);
         }
 
         public override void OnUpdate()
