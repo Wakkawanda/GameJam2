@@ -14,6 +14,7 @@ namespace Scripts
     {
         [SerializeField] private Rigidbody2D _rigidbody2D;
         [SerializeField] private Weapon _weapon;
+        [SerializeField] private Animator _animator;
         [SerializeField] private float _speed;
         [SerializeField] private List<Image> _hearts;
         
@@ -106,8 +107,8 @@ namespace Scripts
         {
             _stateMachine = new StateMachine();
             
-            IdleState = new IdleState(this, _playerInput);
-            MovingState = new MovingState(this, _playerInput);
+            IdleState = new IdleState(this, _playerInput, _animator);
+            MovingState = new MovingState(this, _playerInput, _animator);
             AttackState = new AttackState(this, _playerInput, Weapon);
             JumpFranticState = new JumpFranticState(this, _playerInput);
             SmokeState = new SmokeState(this, _playerInput);

@@ -7,13 +7,15 @@ namespace States
     public class MovingState : UnitStateBase
     {
         private readonly PlayerInput _playerInput;
+        private readonly Animator _animator;
 
         private CompositeDisposable _disposable;
         private Vector2 _direction;
 
-        public MovingState(Player player, PlayerInput playerInput) : base(player)
+        public MovingState(Player player, PlayerInput playerInput, Animator animator) : base(player)
         {
             _playerInput = playerInput;
+            _animator = animator;
         }
 
         public override void OnEnter()
@@ -26,6 +28,7 @@ namespace States
                 .Subscribe(_ => Mover())
                 .AddTo(_disposable);
             
+            _animator.SetBool("isRun", true);
             Debug.Log("Move");
         }
 
@@ -52,6 +55,7 @@ namespace States
         {
             _disposable?.Clear();
             _disposable?.Dispose();
+            _animator.SetBool("isRun", false);
         }
 
         private void Mover()
