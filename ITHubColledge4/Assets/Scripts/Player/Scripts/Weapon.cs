@@ -1,7 +1,6 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Enemy;
-using Enemy.Scripts;
 using UnityEngine;
 
 namespace Scripts
@@ -11,7 +10,7 @@ namespace Scripts
         [SerializeField] private Vector3 _startAttackValue;
         [SerializeField] private Vector3 _startPositionAttackValue;
         [SerializeField] private Vector3 _endAttackValue;
-        [SerializeField] private Vector3 _endPositionAttackValue;
+        [SerializeField] private Vector3[] _endPositionAttackValue;
         [SerializeField] private Player _player;
         [SerializeField] private Transform _attackPoint;
         [SerializeField] private LayerMask _enemyLayer;
@@ -34,7 +33,7 @@ namespace Scripts
             float targetTime = 0.2f;
             
             transform.DOLocalRotate(_endAttackValue, targetTime);
-            transform.DOLocalMove(_endPositionAttackValue, targetTime);
+            transform.DOLocalPath(_endPositionAttackValue, targetTime);
 
             while (timer < targetTime)
             {

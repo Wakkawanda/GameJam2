@@ -32,7 +32,8 @@ namespace States
 
         public override void OnExit()
         {
-            _animator?.SetBool("isIdle", false);
+            if (_animator != null)
+                _animator.SetBool("isIdle", false);
         }
     }
 }

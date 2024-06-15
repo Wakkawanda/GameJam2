@@ -22,6 +22,10 @@ namespace Scripts
         [SerializeField] private Transform _attackPoint;
         [SerializeField] private LayerMask _enemyLayer;
         [SerializeField] private float _attackSize = 5;
+        [SerializeField] private float _canCooldownAttack = 0.5f;
+        [SerializeField] private float _canCooldownAttackJumpFrantic = 5;
+        [SerializeField] private float _canCooldownAttackSmoke = 7;
+        [SerializeField] private float _canCooldownAttackVortex = 10;
         public float hurtTimer;
         public bool isHurt = false;
         public float radiusCheck = 3f;
@@ -31,6 +35,14 @@ namespace Scripts
         private CompositeDisposable _disposable;
         private PlayerInput _playerInput;
         private Wallet _wallet;
+        private float _currentTimeAttack;
+        private float _currentTimeJumpFrantic;
+        private float _currentTimeSmoke;
+        private float _currentTimeVortex;
+        private bool _canAttack;
+        private bool _canAttackJumpFrantic;
+        private bool _canAttackSmoke;
+        private bool _canAttackVortex;
 
         public Rigidbody2D Rigidbody2D => _rigidbody2D;
         public Weapon Weapon => _weapon;
@@ -136,6 +148,46 @@ namespace Scripts
             {
                 ChangeState(IdleState);
             }
+
+            if (!_canAttack)
+            {
+                _currentTimeAttack += Time.deltaTime;
+                if (_currentTimeAttack > _canCooldownAttack)
+                {
+                    _canAttack = true;
+                    _currentTimeAttack = 0;
+                }
+            }
+            
+            if (!_canAttackJumpFrantic)
+            {
+                _currentTimeJumpFrantic += Time.deltaTime;
+                if (_currentTimeJumpFrantic > _canCooldownAttackJumpFrantic)
+                {
+                    _canAttackJumpFrantic = true;
+                    _currentTimeJumpFrantic = 0;
+                }
+            }
+            
+            if (!_canAttackSmoke)
+            {
+                _currentTimeSmoke += Time.deltaTime;
+                if (_currentTimeSmoke > _canCooldownAttackSmoke)
+                {
+                    _canAttackSmoke = true;
+                    _currentTimeSmoke = 0;
+                }
+            }
+            
+            if (!_canAttackVortex)
+            {
+                _currentTimeVortex += Time.deltaTime;
+                if (_currentTimeVortex > _canCooldownAttackVortex)
+                {
+                    _canAttackVortex = true;
+                    _currentTimeVortex = 0;
+                }
+            }
             
             _stateMachine?.OnUpdate();
         }
@@ -157,22 +209,38 @@ namespace Scripts
 
         private void Attack(InputAction.CallbackContext obj)
         {
-            ChangeState(AttackState);
+            if (_canAttack)
+            {
+                ChangeState(AttackState);
+                _canAttack = false;
+            }
         }
 
         private void JumpFrantic(InputAction.CallbackContext obj)
         {
-            ChangeState(JumpFranticState);
+            if (_canAttackJumpFrantic)
+            {
+                ChangeState(JumpFranticState);
+                _canAttackJumpFrantic = false;
+            }
         }
         
         private void Smoke(InputAction.CallbackContext obj)
         {
-            ChangeState(SmokeState);
+            if (_canAttackSmoke)
+            {
+                ChangeState(SmokeState);
+                _canAttackSmoke = false;
+            }
         }
        
         private void Vortex(InputAction.CallbackContext obj)
         {
-            ChangeState(VortexState);
+            if (_canAttackVortex)
+            {
+                ChangeState(VortexState);
+                _canAttackVortex = false;
+            }
         }
 
         private void GameOver()

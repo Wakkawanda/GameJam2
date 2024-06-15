@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 6515306234300736415}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.597, y: 0.3, z: 0}
+  m_LocalPosition: {x: 0.6, y: 0.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -99,9 +99,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _startAttackValue: {x: 0, y: 0, z: 0}
-  _startPositionAttackValue: {x: 1, y: 0.3, z: 0}
+  _startPositionAttackValue: {x: 0.6, y: 0.4, z: 0}
   _endAttackValue: {x: 0, y: 0, z: -135}
-  _endPositionAttackValue: {x: 1, y: -0.83, z: 0}
+  _endPositionAttackValue:
+  - {x: 0.55, y: 0.44, z: 0}
+  - {x: 1.37, y: 0.41, z: 0}
+  - {x: 0.83, y: -0.49, z: 0}
   _player: {fileID: 2136991256644693000}
   _attackPoint: {fileID: 7741024729873415840}
   _enemyLayer:
@@ -249,7 +252,11 @@ MonoBehaviour:
   _enemyLayer:
     serializedVersion: 2
     m_Bits: 64
-  _attackSize: 2.07
+  _attackSize: 2.9
+  _canCooldownAttack: 0.5
+  _canCooldownAttackJumpFrantic: 5
+  _canCooldownAttackSmoke: 7
+  _canCooldownAttackVortex: 10
   hurtTimer: 1
   isHurt: 0
   radiusCheck: 1.5

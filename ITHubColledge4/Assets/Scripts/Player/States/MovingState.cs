@@ -27,8 +27,11 @@ namespace States
                 .EveryFixedUpdate()
                 .Subscribe(_ => Mover())
                 .AddTo(_disposable);
-            
-            _animator.SetBool("isRun", true);
+
+            if (_animator != null)
+            {
+                _animator.SetBool("isRun", true);
+            }
             Debug.Log("Move");
         }
 
@@ -55,7 +58,11 @@ namespace States
         {
             _disposable?.Clear();
             _disposable?.Dispose();
-            _animator.SetBool("isRun", false);
+
+            if (_animator != null)
+            {
+                _animator.SetBool("isRun", false);
+            }
         }
 
         private void Mover()
