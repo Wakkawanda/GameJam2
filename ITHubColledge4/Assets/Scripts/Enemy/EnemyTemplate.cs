@@ -11,6 +11,7 @@ namespace Enemy
         [SerializeField] private int attack;
         [SerializeField] private int moneyDrop;
         [SerializeField] private Player player;
+        private GameObject playerObject;
         [SerializeField] private NavMeshAgent agent;
         // enemy type here maybe? i.e. melee or long-range or whatever
         // pick attack from enemy type 
@@ -31,7 +32,8 @@ namespace Enemy
         {
             if (player == null) {
                 string plr = "Player";
-                player = GameObject.Find(plr).GetComponent<Player>(); // its gamejab
+                playerObject = GameObject.Find(plr);
+                player = playerObject.GetComponent<Player>(); // its gamejab
             }
 
             _wallet = player.Wallet;

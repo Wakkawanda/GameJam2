@@ -20,7 +20,7 @@ namespace Scripts
         [SerializeField] private List<Image> _hearts;
         public float hurtTimer;
         public bool isHurt = false;
-        public float radiusCheck;
+        public float radiusCheck = 3f;
         public LayerMask enemyLayer;
 
         private StateMachine _stateMachine;
@@ -75,7 +75,7 @@ namespace Scripts
                 .AddTo(_disposable);
         }
 
-        private void Damage() {
+        private void TakeDamage() {
             StartCoroutine("DamageTimer");
             Image image = _hearts.LastOrDefault(heart => heart.gameObject.activeSelf);
             
@@ -94,7 +94,7 @@ namespace Scripts
         {
             if (other.gameObject.layer == 6 && !isHurt)
             {
-                Damage();
+                TakeDamage();
             }
         }
 
@@ -108,10 +108,13 @@ namespace Scripts
             isHurt = true;
             yield return new WaitForSeconds(hurtTimer);
             isHurt = false;
-            Collider2D[] groundColliders = Physics2D.OverlapCircleAll(transform.position,
+            Collider2D[] enemyColliders = Physics2D.OverlapCircleAll(transform.position,
                 radiusCheck, 
                 enemyLayer);
-            if (groundColliders.Length >= 1) StartCoroutine("DamageTimer");
+            if (enemyColliders.Length > 0)
+            { 
+                TakeDamage();
+            }
         }
 
         private void OnUpdate()
