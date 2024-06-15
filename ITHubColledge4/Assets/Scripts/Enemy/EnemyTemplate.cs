@@ -33,6 +33,8 @@ namespace Enemy
                 string plr = "Player";
                 player = GameObject.Find(plr).GetComponent<Player>(); // its gamejab
             }
+
+            _wallet = player.Wallet;
             //enemyHealth = new();
             //enemyHealth.die.AddListener(Destroy);
         }

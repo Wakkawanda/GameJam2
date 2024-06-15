@@ -12,23 +12,27 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private LayerMask layer;
     [SerializeField] private Vector3 point2;
     private readonly string spawnFunc = "Spawn";
+    private bool failSpawn = true;
 
-    void Start()
+    private void Start()
     {
-        
+        failSpawn = true;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!failSpawn)
+            return;
+        
         StartCoroutine(spawnFunc);
     }
 
     IEnumerator Spawn() 
     {
         int enemyIndex = RandomBetweenFloor(0, enemyList.Count);
-        GameObject enemyToSpawn = enemyList[enemyIndex];
-        bool failSpawn = true; 
+        GameObject enemyToSpawn = enemyList[enemyIndex]; 
+        failSpawn = true; 
         do {
             Vector3 spot = RandomBetweenFloor(point1, point2);
             failSpawn = CheckForPlayer(spot);
@@ -36,9 +40,10 @@ public class EnemySpawner : MonoBehaviour
             {
                 Instantiate(enemyToSpawn, spot, Quaternion.identity, this.transform);
             };
-            yield return new WaitForSeconds(timeoutInSeconds); 
+            yield return new WaitForSeconds(timeoutInSeconds);
+
+            failSpawn = true;
         } while (failSpawn);
-        yield break;
     }
 
     int RandomBetweenFloor(float min, float max) 
