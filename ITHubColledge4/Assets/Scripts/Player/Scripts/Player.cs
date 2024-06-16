@@ -367,7 +367,7 @@ namespace Scripts
 
         private IEnumerator GameOver()
         {
-            _animator.SetBool("IsDead", true);
+            _animator.SetTrigger("IsDead");
             Weapon.gameObject.SetActive(false);
             OnDisable();
             ChangeState(KilledState);
