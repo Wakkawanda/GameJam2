@@ -17,7 +17,6 @@ namespace Scripts
         [SerializeField] private float _attackSize = 5;
         [SerializeField] private AudioSource _hit;
 
-
         public bool IsAttack { get; set; }
 
         private void OnDrawGizmos()

@@ -16,6 +16,7 @@ namespace States
 
         public override void OnEnter()
         {
+            Player.ActiveJumpFrantic = true;
             //todo animation attack
             Debug.Log("JumpFranticState");
             _animator.SetTrigger("JumpFrantic");
@@ -31,6 +32,7 @@ namespace States
 
         public override void OnExit()
         {
+            Player.ActiveJumpFrantic = false;
         }
     }
 }

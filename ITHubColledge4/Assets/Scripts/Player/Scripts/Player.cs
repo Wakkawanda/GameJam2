@@ -1,12 +1,15 @@
+using System;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
+using Cinemachine;
 using Enemy;
 using States;
 using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using weed;
 using Zenject;
@@ -36,16 +39,22 @@ namespace Scripts
         [SerializeField] private Image _smokeViewLock;
         [SerializeField] private Image _vortexViewLock;
         [SerializeField] private AudioSource _miss;
+        [SerializeField] private AudioSource _hit;
+        [SerializeField] private AudioSource _smoke;
+        [SerializeField] private CinemachineVirtualCamera _cinemachineVirtual;
+        
         public float hurtTimer;
         public bool isHurt = false;
         public float radiusCheck = 3f;
         public LayerMask enemyLayer;
 
+        private CinemachineBasicMultiChannelPerlin _cinemachineBasicMultiChannelPerlin;
         private StateMachine _stateMachine;
         private CompositeDisposable _disposable;
         private PlayerInput _playerInput;
         private Wallet _wallet;
         private bool _isVortex;
+        private bool _isSmoke;
         private float _currentTimeAttack;
         private float _currentTimeJumpFrantic;
         private float _currentTimeSmoke;
@@ -54,6 +63,10 @@ namespace Scripts
         private bool _canAttackJumpFrantic;
         private bool _canAttackSmoke;
         private bool _canAttackVortex;
+        public bool ActiveJumpFrantic;
+        public bool ActiveAttackSmoke;
+        public bool ActiveAttackVortex;
+        
 
         public Rigidbody2D Rigidbody2D => _rigidbody2D;
         public Weapon Weapon => _weapon;
@@ -73,6 +86,11 @@ namespace Scripts
         {
             _playerInput = playerInput;
             _wallet = wallet;
+        }
+
+        private void Awake()
+        {
+            _cinemachineBasicMultiChannelPerlin = _cinemachineVirtual.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
         }
 
         private void OnEnable()
@@ -273,8 +291,8 @@ namespace Scripts
             MovingState = new MovingState(this, _playerInput, _animator);
             AttackState = new AttackState(this, _playerInput, Weapon);
             JumpFranticState = new JumpFranticState(this, _playerInput, _animator);
-            SmokeState = new SmokeState(this, _playerInput);
-            VortexState = new VortexState(this, _playerInput);
+            SmokeState = new SmokeState(this, _playerInput, _animator);
+            VortexState = new VortexState(this, _playerInput, _animator);
             KilledState = new KilledState(this);
 
             _stateMachine.ChangeState(IdleState);
@@ -282,7 +300,7 @@ namespace Scripts
 
         private void Attack(InputAction.CallbackContext obj)
         {
-            if (_canAttack)
+            if (_canAttack && !ActiveAttackSmoke && !ActiveAttackVortex && !ActiveJumpFrantic)
             {
                 ChangeState(AttackState);
                 _miss.Play();
@@ -292,7 +310,7 @@ namespace Scripts
 
         private void JumpFrantic(InputAction.CallbackContext obj)
         {
-            if (_canAttackJumpFrantic)
+            if (_canAttackJumpFrantic && !ActiveAttackSmoke && !ActiveAttackVortex)
             {
                 ChangeState(JumpFranticState);
                 _canAttackJumpFrantic = false;
@@ -301,7 +319,7 @@ namespace Scripts
         
         private void Smoke(InputAction.CallbackContext obj)
         {
-            if (_canAttackSmoke)
+            if (_canAttackSmoke && !ActiveJumpFrantic && !ActiveAttackVortex)
             {
                 ChangeState(SmokeState);
                 _canAttackSmoke = false;
@@ -310,10 +328,9 @@ namespace Scripts
        
         private void Vortex(InputAction.CallbackContext obj)
         {
-            if (_canAttackVortex)
+            if (_canAttackVortex && !ActiveAttackSmoke && !ActiveJumpFrantic)
             {
-                _animator.SetTrigger("Vortex");
-                Weapon.gameObject.SetActive(false);
+                ChangeState(VortexState);
                 _canAttackVortex = false;
             }
         }
@@ -327,6 +344,8 @@ namespace Scripts
         {
             Collider2D[] enemiesHit = Physics2D.OverlapCircleAll(_attackPoint.position, _attackSize, _enemyLayer);
 
+            _hit.Play();
+            _cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = 1;
             foreach (var enemy in enemiesHit)
             {
                 if (enemy.TryGetComponent(out EnemyTemplate health))
@@ -339,24 +358,28 @@ namespace Scripts
 
         public void StopJumpFrantic()
         {
+            _cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = 0;
+            ActiveJumpFrantic = false;
             Weapon.gameObject.SetActive(true);
             ChangeState(MovingState);
             Debug.Log("Stop JumpFrantic");
         }
-
-        public void AttackVortex()
+        
+        public void AttackSmoke()
         {
-            _isVortex = true;
-            StartCoroutine(OnAttackVortex());
+            _isSmoke = true;
+            StartCoroutine(OnAttackSmoke());
         }
         
-        private IEnumerator OnAttackVortex()
+        private IEnumerator OnAttackSmoke()
         {
-            Debug.Log("Attack JumpFrantic");
+            Debug.Log("Attack Smoke");
+            
+            _smoke.Play();
 
-            while (_isVortex)
+            while (_isSmoke)
             {
-                Collider2D[] enemiesHit = Physics2D.OverlapCircleAll(_attackPoint.position, _attackVortexSize, _enemyLayer);
+                Collider2D[] enemiesHit = Physics2D.OverlapCircleAll(new Vector2(_attackPoint.position.x + (_attackPoint.localScale.x * 2), _attackPoint.position.y), _attackVortexSize, _enemyLayer);
 
                 foreach (var enemy in enemiesHit)
                 {
@@ -370,8 +393,47 @@ namespace Scripts
             }
         }
         
+        public void StopSmoke()
+        {
+            ActiveAttackSmoke = false;
+            _isSmoke = false;
+            Weapon.gameObject.SetActive(true);
+            _smoke.Stop();
+            ChangeState(MovingState);
+            Debug.Log("Stop Smoke");
+        }
+
+        public void AttackVortex()
+        {
+            _isVortex = true;
+            StartCoroutine(OnAttackVortex());
+        }
+        
+        private IEnumerator OnAttackVortex()
+        {
+            Debug.Log("Attack JumpFrantic");
+            _cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = 1;
+
+            while (_isVortex)
+            {
+                Collider2D[] enemiesHit = Physics2D.OverlapCircleAll(_attackPoint.position, _attackVortexSize, _enemyLayer);
+
+                foreach (var enemy in enemiesHit)
+                {
+                    _hit.Play();
+                    if (enemy.TryGetComponent(out EnemyTemplate health))
+                    {
+                        health.TakeDamage(0);
+                    }
+                }
+
+                yield return null;
+            }
+        }
+        
         public void StopVortex()
         {
+            _cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = 0;
             _isVortex = false;
             Weapon.gameObject.SetActive(true);
             ChangeState(MovingState);
