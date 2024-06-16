@@ -68,7 +68,7 @@ namespace weed
                 _buyButton.gameObject.SetActive(true);
             }
 
-            if (_wallet.GetMoneyValue() < Prices)
+            if (_wallet.GetMoneyValue() < Prices && UnlockSpells.Second)
             {
                 _exitButton.gameObject.SetActive(true);
             }
@@ -99,6 +99,7 @@ namespace weed
 
         private void CheckIfEnough()
         {
+            _buyButton.interactable = false;
             if (_wallet.GetMoneyValue() >= Prices)
             {
                 _wallet.RemoveMoney(Prices); 
@@ -184,6 +185,8 @@ namespace weed
 
         private IEnumerator ToGame()
         {
+            _skipButton.interactable = false;
+            
             yield return new WaitForSeconds(1);
             
             SceneManager.LoadScene("Game");
@@ -191,6 +194,7 @@ namespace weed
 
         private IEnumerator ToLobby()
         {
+            _exitButton.interactable = false;
             _canvas.SetActive(false);
             
             while (_endedCanvas.alpha < 1)
