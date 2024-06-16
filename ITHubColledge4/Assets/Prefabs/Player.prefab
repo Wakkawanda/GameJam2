@@ -242,7 +242,7 @@ MonoBehaviour:
   _rigidbody2D: {fileID: 8819199403206142498}
   _weapon: {fileID: 5968013002756045744}
   _animator: {fileID: 7899398200880208730}
-  _speed: 10
+  _speed: 7
   _hearts:
   - {fileID: 0}
   - {fileID: 0}
@@ -253,11 +253,15 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _attackSize: 2.9
+  _attackVortexSize: 2
   _canCooldownAttack: 0.5
   _canCooldownAttackJumpFrantic: 5
   _canCooldownAttackSmoke: 7
   _canCooldownAttackVortex: 10
   _spriteRenderer: {fileID: 3157880269293970252}
+  _jumpFranticView: {fileID: 0}
+  _smokeView: {fileID: 0}
+  _vortexView: {fileID: 0}
   hurtTimer: 1.5
   isHurt: 0
   radiusCheck: 1.5

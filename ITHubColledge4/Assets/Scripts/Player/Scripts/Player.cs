@@ -22,11 +22,15 @@ namespace Scripts
         [SerializeField] private Transform _attackPoint;
         [SerializeField] private LayerMask _enemyLayer;
         [SerializeField] private float _attackSize = 5;
+        [SerializeField] private float _attackVortexSize = 2;
         [SerializeField] private float _canCooldownAttack = 0.5f;
         [SerializeField] private float _canCooldownAttackJumpFrantic = 5;
         [SerializeField] private float _canCooldownAttackSmoke = 7;
         [SerializeField] private float _canCooldownAttackVortex = 10;
         [SerializeField] private SpriteRenderer _spriteRenderer;
+        [SerializeField] private Image _jumpFranticView;
+        [SerializeField] private Image _smokeView;
+        [SerializeField] private Image _vortexView;
         public float hurtTimer;
         public bool isHurt = false;
         public float radiusCheck = 3f;
@@ -36,6 +40,7 @@ namespace Scripts
         private CompositeDisposable _disposable;
         private PlayerInput _playerInput;
         private Wallet _wallet;
+        private bool _isVortex;
         private float _currentTimeAttack;
         private float _currentTimeJumpFrantic;
         private float _currentTimeSmoke;
@@ -84,6 +89,10 @@ namespace Scripts
         private void Start()
         {
             InitializeStates();
+
+            _currentTimeJumpFrantic = _canCooldownAttackJumpFrantic / 2;
+            _currentTimeSmoke = _canCooldownAttackSmoke / 2;
+            _currentTimeVortex = _canCooldownAttackVortex / 2;
 
             _disposable?.Dispose();
             _disposable = new CompositeDisposable();
@@ -197,6 +206,10 @@ namespace Scripts
                     _currentTimeVortex = 0;
                 }
             }
+
+            _jumpFranticView.fillAmount = _currentTimeJumpFrantic / _canCooldownAttackJumpFrantic;
+            _smokeView.fillAmount = _currentTimeSmoke / _canCooldownAttackSmoke;
+            _vortexView.fillAmount = _currentTimeVortex / _canCooldownAttackVortex;
             
             _stateMachine?.OnUpdate();
         }
@@ -247,7 +260,8 @@ namespace Scripts
         {
             if (_canAttackVortex)
             {
-                ChangeState(VortexState);
+                _animator.SetTrigger("Vortex");
+                Weapon.gameObject.SetActive(false);
                 _canAttackVortex = false;
             }
         }
@@ -273,6 +287,40 @@ namespace Scripts
 
         public void StopJumpFrantic()
         {
+            Weapon.gameObject.SetActive(true);
+            ChangeState(MovingState);
+            Debug.Log("Stop JumpFrantic");
+        }
+
+        public void AttackVortex()
+        {
+            _isVortex = true;
+            StartCoroutine(OnAttackVortex());
+        }
+        
+        private IEnumerator OnAttackVortex()
+        {
+            Debug.Log("Attack JumpFrantic");
+
+            while (_isVortex)
+            {
+                Collider2D[] enemiesHit = Physics2D.OverlapCircleAll(_attackPoint.position, _attackVortexSize, _enemyLayer);
+
+                foreach (var enemy in enemiesHit)
+                {
+                    if (enemy.TryGetComponent(out EnemyTemplate health))
+                    {
+                        health.TakeDamage(0);
+                    }
+                }
+
+                yield return null;
+            }
+        }
+        
+        public void StopVortex()
+        {
+            _isVortex = false;
             Weapon.gameObject.SetActive(true);
             ChangeState(MovingState);
             Debug.Log("Stop JumpFrantic");
