@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Enemy;
 using UnityEngine;
 using weed;
 
@@ -15,6 +16,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private GameObject smokeFX;
     private readonly string spawnFunc = "Spawn";
     private bool failSpawn = true;
+    private Coroutine _coroutine;
 
     [SerializeField] private float contDiff = 0;
     [SerializeField] private int beginDiff = 0;
@@ -31,9 +33,7 @@ public class EnemySpawner : MonoBehaviour
         if (UnlockSpells.Second) beginDiff++;
         if (UnlockSpells.Three) beginDiff++;
         
-
-
-        StartCoroutine(spawnFunc);
+        _coroutine = StartCoroutine(spawnFunc);
     }
 
     IEnumerator Spawn() 
@@ -58,10 +58,22 @@ public class EnemySpawner : MonoBehaviour
                 if (tryAttempts > 100) Debug.Log("Someone couldn't be lucky enough to get spawned.");
 
                 /*may need adjustments, needs to be >0 Z level for the smoke to not be hidden*/
-                if (!failSpawn) Instantiate(smokeFX, spot, Quaternion.identity);
-                Instantiate(enemyToSpawn, spot, Quaternion.identity, this.transform);
+                if (!failSpawn)
+                {
+                    Instantiate(smokeFX, spot, Quaternion.identity);
+
+                    yield return null;
+                    
+                    Instantiate(enemyToSpawn, spot, Quaternion.identity, this.transform);
+                }
             } 
         }
+    }
+
+    public void Remove()
+    {
+        StopCoroutine(_coroutine);
+        gameObject.SetActive(false);
     }
 
     int RandomBetweenFloor(float min, float max) 

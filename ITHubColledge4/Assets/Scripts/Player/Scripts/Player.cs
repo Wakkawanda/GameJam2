@@ -40,8 +40,11 @@ namespace Scripts
         [SerializeField] private Image _vortexViewLock;
         [SerializeField] private AudioSource _miss;
         [SerializeField] private AudioSource _hit;
+        [SerializeField] private AudioSource _myHit;
         [SerializeField] private AudioSource _smoke;
         [SerializeField] private CinemachineVirtualCamera _cinemachineVirtual;
+        [SerializeField] private EnemySpawner _enemySpawner;
+        [SerializeField] private CanvasGroup _canvas;
         
         public float hurtTimer;
         public bool isHurt = false;
@@ -153,6 +156,7 @@ namespace Scripts
         private void TakeDamage() {
             StartCoroutine("DamageTimer");
             Image image = _hearts.LastOrDefault(heart => heart.gameObject.activeSelf);
+            _myHit.Play();
             
             if (image != null) 
                 image.gameObject.SetActive(false);
@@ -161,7 +165,7 @@ namespace Scripts
 
             if (image == null)
             {
-                GameOver();
+                StartCoroutine(GameOver());
             }
         }
 
@@ -335,8 +339,21 @@ namespace Scripts
             }
         }
 
-        private void GameOver()
+        private IEnumerator GameOver()
         {
+            _animator.SetBool("IsDead", true);
+            
+            yield return new WaitForSeconds(0.2f);
+            
+            _enemySpawner.Remove();
+
+            while (_canvas.alpha < 1)
+            {
+                _canvas.alpha += 0.01f;
+
+                yield return new WaitForSeconds(0.01f);
+            }
+            
             SceneManager.LoadScene("Tavern");
         }
 
