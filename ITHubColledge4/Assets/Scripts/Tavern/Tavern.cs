@@ -44,6 +44,13 @@ namespace weed
                 Debug.Log("player animation"); //todo event for player
             }
 
+            if (!UnlockSpells.Three && UnlockSpells.Second && UnlockSpells.First)
+                UnlockSpells.Three = true;
+            if (!UnlockSpells.Second && UnlockSpells.First)
+                UnlockSpells.Second = true;
+            if (!UnlockSpells.First)
+                UnlockSpells.First = true;
+
             StartCoroutine(WaitForInputAndSendToHell());
         }
 
