@@ -17,6 +17,7 @@ namespace weed
         [SerializeField] private int _imageIndex = 0;
         [SerializeField] private Button _buyButton;
         [SerializeField] private TextMeshProUGUI _pricesText;
+        [SerializeField] private TextMeshProUGUI _walletMoney;
         [SerializeField] private TextMeshProUGUI _newPricesText;
         [SerializeField] private Button _exitButton;
         [SerializeField] private Button _skipButton;
@@ -33,6 +34,7 @@ namespace weed
 
         private void Awake()
         {
+            _walletMoney.text = _wallet.GetMoneyValue().ToString();
             if (_wallet.GetMoneyValue() > Prices)
             {
                 if (UnlockSpells.Three)
