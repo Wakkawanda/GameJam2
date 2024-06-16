@@ -97,7 +97,7 @@ namespace weed
                 Prices = 200;
             }
 
-            StartCoroutine(WaitForInputAndSendToHell());
+            StartCoroutine(ToGame());
         }
 
         private void GoThroughImages() 
@@ -158,11 +158,25 @@ namespace weed
             _imageIndex = (_imageIndex + 1) % _images.Count;
         }
 
-        private IEnumerator WaitForInputAndSendToHell()
+        private IEnumerator ToGame()
         {
             yield return new WaitForSeconds(1);
             
             SceneManager.LoadScene("Game");
+        }
+        
+        private IEnumerator ToLobby()
+        {
+            yield return new WaitForSeconds(1);
+            
+            SceneManager.LoadScene("Lobby");
+        }
+        
+        private IEnumerator ToTavern()
+        {
+            yield return new WaitForSeconds(1);
+            
+            SceneManager.LoadScene("Tavern");
         }
     }
 }

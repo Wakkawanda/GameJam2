@@ -62,7 +62,7 @@ public class EnemySpawner : MonoBehaviour
                 {
                     Instantiate(smokeFX, spot, Quaternion.identity);
 
-                    yield return null;
+                    yield return new WaitForSeconds(0.3f);
                     
                     Instantiate(enemyToSpawn, spot, Quaternion.identity, this.transform);
                 }
