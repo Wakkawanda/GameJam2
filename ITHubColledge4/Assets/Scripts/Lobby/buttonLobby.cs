@@ -11,6 +11,7 @@ public class buttonLobby : MonoBehaviour
     [SerializeField] private Button play, autors, exit, autorsexit;
     [SerializeField] private GameObject creaters;
     public void OnEnable(){
+        creaters.gameObject.SetActive(false);
 
         play.onClick.AddListener(() => SceneManager.LoadScene("Game"));
         exit.onClick.AddListener(Application.Quit);
