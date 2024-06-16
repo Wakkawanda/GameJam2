@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Button = UnityEngine.UI.Button;
@@ -15,7 +16,7 @@ public class buttonLobby : MonoBehaviour
         autors.onClick.AddListener(AutorsClick);
         autorsexit.onClick.AddListener(AutorsExit);
 
-
+        
     }
 
     private void AutorsClick(){

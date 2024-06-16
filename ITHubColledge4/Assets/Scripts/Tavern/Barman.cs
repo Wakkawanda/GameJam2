@@ -19,15 +19,18 @@ namespace weed
         [SerializeField] private CanvasGroup _endedCanvas;
         [SerializeField] private int _imageIndex = 0;
         [SerializeField] private int _imageIndexToStopAt = 0;
-        [SerializeField] private Button _buyButton;
         [SerializeField] private TextMeshProUGUI _pricesText;
         [SerializeField] private TextMeshProUGUI _walletMoney;
-        [SerializeField] private TextMeshProUGUI _newPricesText;
+        [SerializeField] private Button _buyButton;
         [SerializeField] private Button _exitButton;
         [SerializeField] private Button _skipButton;
-        
+        [SerializeField] private CanvasGroup _buyButtonCanvas;
+        [SerializeField] private CanvasGroup _skipButtonCanvas;
+        [SerializeField] private CanvasGroup _exitButtonCanvas;
+
         private Wallet _wallet;
-        public static int Prices = 100;
+        public static int Prices = 50;
+        public static bool First = true;
 
         [Inject]
         public void Construct(Wallet wallet)
@@ -48,63 +51,45 @@ namespace weed
                 {
                     Prices = _wallet.GetMoneyValue();
                 }
-                
-                _newPricesText.gameObject.SetActive(true);
-            }
-            else
-            {
-                _newPricesText.gameObject.SetActive(false);
             }
             
-            _pricesText.text = $"{Prices}";
-
-            if (Prices > _wallet.GetMoneyValue())
+            if (UnlockSpells.Three)
             {
-                _skipButton.gameObject.SetActive(true);
-                _buyButton.gameObject.SetActive(false);
+                _pricesText.text = "Нет в наличии";
             }
             else
             {
-                _skipButton.gameObject.SetActive(false);
-                _buyButton.gameObject.SetActive(true);
-            }
-
-            if (_wallet.GetMoneyValue() < Prices && UnlockSpells.Second)
-            {
-                _exitButton.gameObject.SetActive(true);
-            }
-            else
-            {
-                _exitButton.gameObject.SetActive(false);
+                _pricesText.text = $"{Prices}";
             }
         }
 
         private void Start()
         {
-            int? firstTimer = _wallet.GetFirstCutscene();
-            if (firstTimer == null) firstTimer = 1;
-            bool makingSure = firstTimer > 0 ? true : false;
-
-            GoThroughImages(makingSure);
+            GoThroughImages(First);
         }
 
         private void OnEnable()
         {
-            _buyButton.onClick.AddListener(CheckIfEnough);
+            _buyButton.onClick.AddListener(() => StartCoroutine(CheckIfEnough()));
             _exitButton.onClick.AddListener(() => StartCoroutine(ToLobby()));
             _skipButton.onClick.AddListener(() => StartCoroutine(ToGame()));
         }
 
         private void OnDisable()
         {
-            _buyButton.onClick.RemoveListener(CheckIfEnough);
+            _buyButton.onClick.RemoveListener(() => StartCoroutine(CheckIfEnough()));
             _exitButton.onClick.RemoveListener(() => StartCoroutine(ToLobby()));
             _skipButton.onClick.RemoveListener(() => StartCoroutine(ToGame()));
         }
 
-        private void CheckIfEnough()
+        private IEnumerator CheckIfEnough()
         {
+            _buyButtonCanvas.alpha = 0;
             _buyButton.interactable = false;
+            _buyButtonCanvas.blocksRaycasts = false;
+            _buyButtonCanvas.interactable = false;
+            _pricesText.gameObject.SetActive(false);
+            
             if (_wallet.GetMoneyValue() >= Prices)
             {
                 _wallet.RemoveMoney(Prices); 
@@ -119,15 +104,30 @@ namespace weed
             if (!UnlockSpells.Second && UnlockSpells.First)
             {
                 UnlockSpells.Second = true;
-                Prices = 200;
+                Prices = 150;
             }
             if (!UnlockSpells.First)
             {
                 UnlockSpells.First = true;
-                Prices = 150;
+                Prices = 100;
+            }
+            
+            _imagesObject.GetComponent<Image>().sprite = _imagesRepeatingCutscene[_imagesRepeatingCutscene.Count - 2];
+            FadeIn(_canvasGroup, 0.5f);
+            yield return new WaitForSeconds(2f);
+            
+            _imagesObject.GetComponent<Image>().sprite = _imagesRepeatingCutscene[_imagesRepeatingCutscene.Count - 1];
+            FadeIn(_canvasGroup, 0.5f);
+            yield return new WaitForSeconds(2f);
+
+            while (_skipButtonCanvas.alpha < 1)
+            {
+                _skipButtonCanvas.alpha += 0.01f;
+                yield return new WaitForSeconds(0.01f);
             }
 
-            StartCoroutine(ToGame());
+            _skipButtonCanvas.interactable = true;
+            _skipButtonCanvas.blocksRaycasts = true;
         }
 
         private void GoThroughImages(bool first) 
@@ -157,6 +157,8 @@ namespace weed
         private IEnumerator SwitchImageAuto(bool first) 
         {
             var currentImages = first ? _imagesFirstCutscene : _imagesRepeatingCutscene;
+            First = false;
+            
             foreach (Sprite sprite in currentImages)
             {                
                 // get next what we got
@@ -166,24 +168,124 @@ namespace weed
                 // if we get too much go to game
                 if (_imageIndex > currentImages.Count)
                 {
-                    _wallet.SetFirstCutscene(0);
-                    StartCoroutine(ToGame());
+                    //StartCoroutine(ToGame());
+                }
+                
+                // show what we got
+                FadeIn(_canvasGroup, 0.5f);
+                
+                if (UnlockSpells.Three && _imageIndex == 3)
+                {
+                    yield return new WaitForSeconds(2.5f);
+
+                }
+                else
+                {
+                    yield return new WaitForSeconds(1.5f);
+                }
+                
+                if (_imageIndex >= currentImages.Count)
+                {
+                    break;
                 }
 
-                // show what we got
-                FadeIn(_canvasGroup, 1f);
-                yield return new WaitForSeconds(2f);
+                if (_imageIndex == 6 || _imageIndex == 3 && !first)
+                {
+                    if (_wallet.GetMoneyValue() >= Prices)
+                    {
+                        while (_buyButtonCanvas.alpha < 1)
+                        {
+                            _buyButtonCanvas.alpha += 0.01f;
+                            yield return new WaitForSeconds(0.01f);
+                        }
+                        
+                        _buyButtonCanvas.blocksRaycasts = true;
+                        _buyButtonCanvas.interactable = true;
+                        _buyButton.interactable = true;
+                        
+                        break;
+                    }
+                }
+                else
+                {
+                    if (_wallet.GetMoneyValue() < Prices)
+                    {
+                        _buyButtonCanvas.alpha = 0;
+                        _buyButtonCanvas.blocksRaycasts = false;
+                        _buyButtonCanvas.interactable = false;
+                    }
+                }
                 
                 // if this is our stop we stop
                 if (!first && _imageIndex == _imageIndexToStopAt) yield break;
 
                 // hide what we got
-                FadeOut(_canvasGroup, 1f);
-                yield return new WaitForSeconds(2f);
-
-
+                //FadeOut(_canvasGroup, 0.5f);
+                
+                if (_imageIndex == 5 || _imageIndex == 2 && !first)
+                {
+                    yield return new WaitForSeconds(0.5f);
+                    
+                    _pricesText.gameObject.SetActive(true);
+                }
+                else
+                {
+                    _pricesText.gameObject.SetActive(false);
+                }
+                
+                //yield return new WaitForSeconds(1.5f);
             }
-            StartCoroutine("SwitchImageAuto", false);  // loop
+            //StartCoroutine("SwitchImageAuto", false);  // loop
+            
+            if (Prices > _wallet.GetMoneyValue())
+            {
+                _buyButtonCanvas.alpha = 0; 
+                _buyButtonCanvas.blocksRaycasts = false; 
+                _buyButtonCanvas.interactable = false; 
+
+                while (_skipButtonCanvas.alpha < 1)
+                {
+                    _skipButtonCanvas.alpha += 0.01f;
+                    yield return new WaitForSeconds(0.01f);
+                }
+
+                _skipButtonCanvas.interactable = true;
+                _skipButtonCanvas.blocksRaycasts = true;
+            }
+            else
+            {
+                _skipButtonCanvas.alpha = 0; 
+                _skipButtonCanvas.blocksRaycasts = false; 
+                _skipButtonCanvas.interactable = false; 
+
+                while (_buyButtonCanvas.alpha < 1)
+                {
+                    _buyButtonCanvas.alpha += 0.01f;
+                    yield return new WaitForSeconds(0.01f);
+                }
+
+                _buyButtonCanvas.interactable = true;
+                _buyButtonCanvas.blocksRaycasts = true;
+            }
+            
+            if (_wallet.GetMoneyValue() < Prices && UnlockSpells.Second)
+            {
+                while (_exitButtonCanvas.alpha < 1)
+                {
+                    _exitButtonCanvas.alpha += 0.01f;
+
+                    yield return new WaitForSeconds(0.01f);
+                }
+
+                _exitButtonCanvas.blocksRaycasts = true;
+                _exitButtonCanvas.interactable = true;
+            }
+            else
+            {
+                _exitButtonCanvas.alpha = 0f;
+                _exitButtonCanvas.blocksRaycasts = false;
+                _exitButtonCanvas.interactable = false;
+            }
         }
 
         private IEnumerator Fade(CanvasGroup c, float startAlpha, float endAlpha, float time)

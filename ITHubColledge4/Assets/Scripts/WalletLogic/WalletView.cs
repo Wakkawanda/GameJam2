@@ -20,7 +20,14 @@ namespace WalletLogic
 
         private void Start()
         {
-            _moneyTarget.text = $"{Barman.Prices}";
+            if (UnlockSpells.Three)
+            {
+                _moneyTarget.text = "???";
+            }
+            else
+            {
+                _moneyTarget.text = $"{Barman.Prices}";
+            }
         }
 
         private void Update()

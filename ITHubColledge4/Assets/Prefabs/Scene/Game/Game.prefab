@@ -164,7 +164,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: e4f434aeb5df9b04da59a4d3893c9b60, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.35
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -681,6 +681,30 @@ PrefabInstance:
     - target: {fileID: 411204188743618911, guid: f8316c9ab2f10704fa56c7ba8c5d0123, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3082096867709201691, guid: f8316c9ab2f10704fa56c7ba8c5d0123, type: 3}
+      propertyPath: m_text
+      value: "\u041D\u0443\u0436\u043D\u043E \u0434\u0435\u043D\u0435\u0433"
+      objectReference: {fileID: 0}
+    - target: {fileID: 3082096867709201691, guid: f8316c9ab2f10704fa56c7ba8c5d0123, type: 3}
+      propertyPath: m_fontSize
+      value: 73.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6672815906301373498, guid: f8316c9ab2f10704fa56c7ba8c5d0123, type: 3}
+      propertyPath: m_Pivot.x
+      value: -0.00000011175871
+      objectReference: {fileID: 0}
+    - target: {fileID: 6672815906301373498, guid: f8316c9ab2f10704fa56c7ba8c5d0123, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 330.3173
+      objectReference: {fileID: 0}
+    - target: {fileID: 6672815906301373498, guid: f8316c9ab2f10704fa56c7ba8c5d0123, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -582.13513
+      objectReference: {fileID: 0}
+    - target: {fileID: 6672815906301373498, guid: f8316c9ab2f10704fa56c7ba8c5d0123, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.00012207031
       objectReference: {fileID: 0}
     - target: {fileID: 7366348231207969197, guid: f8316c9ab2f10704fa56c7ba8c5d0123, type: 3}
       propertyPath: m_Name
