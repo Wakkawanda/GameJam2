@@ -11,14 +11,16 @@ namespace weed
 {
     public class Barman : MonoBehaviour
     {
-        [SerializeField] private List<int> _prices;
         [SerializeField] private List<Sprite> _images; // cutscene ones
         [SerializeField] private GameObject _imagesObject; // cutscene ones
         [SerializeField] private CanvasGroup _canvasGroup; // cutscene ones
         [SerializeField] private int _imageIndex = 0;
-        [SerializeField] private List<Button> _buttons;
+        [SerializeField] private Button _buyButton;
         [SerializeField] private TextMeshProUGUI _pricesText;
         [SerializeField] private TextMeshProUGUI _newPricesText;
+        [SerializeField] private Button _exitButton;
+        [SerializeField] private Button _skipButton;
+        
         private Wallet _wallet;
 
         public static int Prices = 100;
@@ -50,6 +52,17 @@ namespace weed
             }
             
             _pricesText.text = $"{Prices}";
+
+            if (Prices > _wallet.GetMoneyValue())
+            {
+                _skipButton.gameObject.SetActive(true);
+                _buyButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                _skipButton.gameObject.SetActive(false);
+                _buyButton.gameObject.SetActive(true);
+            }
         }
 
         private void Start()
@@ -59,18 +72,16 @@ namespace weed
 
         private void OnEnable()
         {
-            foreach (Button button in _buttons)
-            {
-                button.onClick.AddListener(CheckIfEnough);
-            }
+            _buyButton.onClick.AddListener(CheckIfEnough);
+            _exitButton.onClick.AddListener(() => StartCoroutine(ToLobby()));
+            _skipButton.onClick.AddListener(() => StartCoroutine(ToGame()));
         }
 
         private void OnDisable()
         {
-            foreach (Button button in _buttons)
-            {
-                button.onClick.RemoveListener(CheckIfEnough);
-            }
+            _buyButton.onClick.RemoveListener(CheckIfEnough);
+            _exitButton.onClick.RemoveListener(() => StartCoroutine(ToLobby()));
+            _skipButton.onClick.RemoveListener(() => StartCoroutine(ToGame()));
         }
 
         private void CheckIfEnough()
@@ -164,19 +175,12 @@ namespace weed
             
             SceneManager.LoadScene("Game");
         }
-        
+
         private IEnumerator ToLobby()
         {
             yield return new WaitForSeconds(1);
-            
+
             SceneManager.LoadScene("Lobby");
-        }
-        
-        private IEnumerator ToTavern()
-        {
-            yield return new WaitForSeconds(1);
-            
-            SceneManager.LoadScene("Tavern");
         }
     }
 }
