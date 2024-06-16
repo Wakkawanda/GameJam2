@@ -29,7 +29,7 @@ public class EnemySpawner : MonoBehaviour
             int enemyIndex = RandomBetweenFloor(0, enemyList.Count);
             GameObject enemyToSpawn = enemyList[enemyIndex]; 
             Vector3 spot = RandomBetweenFloor(point1, point2);
-            Instantiate(smokeFX, spot, Quaternion.identity);
+            Instantiate(smokeFX, spot + new Vector3(0,0,-3), Quaternion.identity);
             Instantiate(enemyToSpawn, spot, Quaternion.identity, this.transform);
             yield return new WaitForSeconds(timeoutInSeconds);
         }
