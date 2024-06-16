@@ -70,6 +70,16 @@ namespace Enemy
         private IEnumerator GoToPlayer()
         {
             agent.destination = player.transform.position;
+            
+            if (player.transform.position.x < transform.position.x)
+            {
+                transform.localScale = new Vector3(-1, 1, 1);
+            }
+
+            if (player.transform.position.x > transform.position.x)
+            {
+                transform.localScale = new Vector3(1, 1, 1);
+            }
             yield return new WaitForSeconds(gotoplayerfunctimeout);
         }
 

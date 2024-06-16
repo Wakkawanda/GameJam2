@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
@@ -9,7 +8,6 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using weed;
 using Zenject;
@@ -94,6 +92,34 @@ namespace Scripts
         private void Awake()
         {
             _cinemachineBasicMultiChannelPerlin = _cinemachineVirtual.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+            
+            if (UnlockSpells.Three)
+                return;
+
+            if (UnlockSpells.Second)
+            {
+                for (int i = 0; i < 1; i++)
+                {
+                    _hearts.LastOrDefault(heart => heart.gameObject.activeSelf)?.gameObject.SetActive(false);
+                }
+                
+                return;
+            }
+            
+            if (UnlockSpells.First)
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    _hearts.LastOrDefault(heart => heart.gameObject.activeSelf)?.gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    _hearts.LastOrDefault(heart => heart.gameObject.activeSelf)?.gameObject.SetActive(false);
+                }
+            }
         }
 
         private void OnEnable()
