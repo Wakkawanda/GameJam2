@@ -14,6 +14,8 @@ namespace weed
         [SerializeField] private List<Sprite> _images; // cutscene ones
         [SerializeField] private GameObject _imagesObject; // cutscene ones
         [SerializeField] private CanvasGroup _canvasGroup; // cutscene ones
+        [SerializeField] private GameObject _canvas;
+        [SerializeField] private CanvasGroup _endedCanvas;
         [SerializeField] private int _imageIndex = 0;
         [SerializeField] private Button _buyButton;
         [SerializeField] private TextMeshProUGUI _pricesText;
@@ -64,6 +66,15 @@ namespace weed
             {
                 _skipButton.gameObject.SetActive(false);
                 _buyButton.gameObject.SetActive(true);
+            }
+
+            if (_wallet.GetMoneyValue() < Prices)
+            {
+                _exitButton.gameObject.SetActive(true);
+            }
+            else
+            {
+                _exitButton.gameObject.SetActive(false);
             }
         }
 
@@ -180,7 +191,16 @@ namespace weed
 
         private IEnumerator ToLobby()
         {
-            yield return new WaitForSeconds(1);
+            _canvas.SetActive(false);
+            
+            while (_endedCanvas.alpha < 1)
+            {
+                _endedCanvas.alpha += 0.01f;
+
+                yield return new WaitForSeconds(0.01f);
+            }
+
+            yield return new WaitForSeconds(5);
 
             SceneManager.LoadScene("Lobby");
         }
