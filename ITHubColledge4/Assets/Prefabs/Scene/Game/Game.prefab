@@ -50,12 +50,14 @@ MonoBehaviour:
   - {fileID: 3230037965167663670, guid: 486d60c5c7fdc4b4fa55efa29f8f2fd8, type: 3}
   timeoutInSeconds: 5
   radiusOfPlayerSafety: 5
-  point1: {x: -6.55, y: 0.49, z: -10.0027}
+  point1: {x: -6.55, y: 0.49, z: 0}
   layer:
     serializedVersion: 2
     m_Bits: 8
-  point2: {x: 6.72, y: -3.62, z: -10.0027}
+  point2: {x: 6.72, y: -3.62, z: 0}
   smokeFX: {fileID: 5302588860485574544, guid: 8ab9f8d375b80a146a1460f0c8d7c48e, type: 3}
+  contDiff: 0
+  beginDiff: 0
 --- !u!1 &2491457151071311062
 GameObject:
   m_ObjectHideFlags: 0

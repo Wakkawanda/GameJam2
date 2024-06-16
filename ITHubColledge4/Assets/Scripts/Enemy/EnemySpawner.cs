@@ -16,8 +16,8 @@ public class EnemySpawner : MonoBehaviour
     private readonly string spawnFunc = "Spawn";
     private bool failSpawn = true;
 
-    private float contDiff = 0;
-    private int beginDiff = 0;
+    [SerializeField] private float contDiff = 0;
+    [SerializeField] private int beginDiff = 0;
 
     // check timer && overtime is harder
     // each First/secnod/third aiblity makes more mobs at spawn
@@ -45,12 +45,13 @@ public class EnemySpawner : MonoBehaviour
                 int enemyIndex = RandomBetweenFloor(0, enemyList.Count);
                 GameObject enemyToSpawn = enemyList[enemyIndex]; 
                 Vector3 spot = RandomBetweenFloor(point1, point2);
-                Instantiate(smokeFX, spot + new Vector3(0,0,-3), Quaternion.identity);
+                /*may need adjustments, needs to be >0 Z level to not be hidden*/
+                Instantiate(smokeFX, spot, Quaternion.identity);
                 Instantiate(enemyToSpawn, spot, Quaternion.identity, this.transform);
             } 
             contDiff += Time.deltaTime;
             yield return new WaitForSeconds(
-                Mathf.Max(timeoutInSeconds - (contDiff) * 0.1f, 0)
+                Mathf.Max(timeoutInSeconds - contDiff, 0)
             );
         }
     }
