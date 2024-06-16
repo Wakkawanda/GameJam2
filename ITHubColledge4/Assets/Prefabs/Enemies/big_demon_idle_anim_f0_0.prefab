@@ -88,7 +88,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!95 &9018563107452959614
 Animator:
   serializedVersion: 5
@@ -126,6 +126,7 @@ MonoBehaviour:
   moneyDrop: 0
   player: {fileID: 0}
   agent: {fileID: 7045057263710243173}
+  bloodFX: {fileID: 5302588860485574544, guid: 19dad1720a80094419bc59ab97e37f49, type: 3}
 --- !u!61 &1296274004610662427
 BoxCollider2D:
   m_ObjectHideFlags: 0

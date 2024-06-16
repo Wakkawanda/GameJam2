@@ -78,7 +78,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 6
   m_Sprite: {fileID: 643659199895480889, guid: 8ba6d993e231a96498f63c66213f2e83, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -89,7 +89,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!95 &9118448729750173329
 Animator:
   serializedVersion: 5
@@ -139,6 +139,7 @@ MonoBehaviour:
   moneyDrop: 0
   player: {fileID: 0}
   agent: {fileID: 3863286852791859690}
+  bloodFX: {fileID: 5302588860485574544, guid: 19dad1720a80094419bc59ab97e37f49, type: 3}
 --- !u!61 &4392424441295560560
 BoxCollider2D:
   m_ObjectHideFlags: 0
