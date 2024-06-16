@@ -49,9 +49,9 @@ MonoBehaviour:
   - {fileID: 4089933368160669453, guid: 9098227a3cf4c5745acee8c165a1c24b, type: 3}
   - {fileID: 3230037965167663670, guid: 486d60c5c7fdc4b4fa55efa29f8f2fd8, type: 3}
   timeoutInSeconds: 5
-  radiusOfPlayerSafety: 5
+  radiusOfPlayerSafety: 4
   point1: {x: -6.55, y: 0.49, z: 0}
-  layer:
+  playerLayer:
     serializedVersion: 2
     m_Bits: 8
   point2: {x: 6.72, y: -3.62, z: 0}
