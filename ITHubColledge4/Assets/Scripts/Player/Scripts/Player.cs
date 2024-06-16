@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using weed;
 using Zenject;
 
 namespace Scripts
@@ -31,6 +32,9 @@ namespace Scripts
         [SerializeField] private Image _jumpFranticView;
         [SerializeField] private Image _smokeView;
         [SerializeField] private Image _vortexView;
+        [SerializeField] private Image _jumpFranticViewLock;
+        [SerializeField] private Image _smokeViewLock;
+        [SerializeField] private Image _vortexViewLock;
         public float hurtTimer;
         public bool isHurt = false;
         public float radiusCheck = 3f;
@@ -73,9 +77,36 @@ namespace Scripts
         private void OnEnable()
         {
             _playerInput.Player.Attack.canceled += Attack;
-            _playerInput.Player.JumpFrantic.canceled += JumpFrantic;
-            _playerInput.Player.Smoke.canceled += Smoke;
-            _playerInput.Player.Vortex.canceled += Vortex;
+
+            if (UnlockSpells.First)
+            {
+                _playerInput.Player.JumpFrantic.canceled += JumpFrantic;
+                _jumpFranticViewLock.gameObject.SetActive(false);
+            }
+            else
+            {
+                _jumpFranticViewLock.gameObject.SetActive(true);
+            }
+            
+            if (UnlockSpells.Second)
+            {
+                _playerInput.Player.Smoke.canceled += Smoke;
+                _smokeViewLock.gameObject.SetActive(false);
+            }
+            else
+            {
+                _smokeViewLock.gameObject.SetActive(true);
+            }
+            
+            if (UnlockSpells.Three)
+            {
+                _playerInput.Player.Vortex.canceled += Vortex;
+                _vortexViewLock.gameObject.SetActive(false);
+            }
+            else
+            {
+                _vortexViewLock.gameObject.SetActive(true);
+            }
         }
 
         private void OnDisable()
@@ -90,7 +121,6 @@ namespace Scripts
         {
             InitializeStates();
 
-            _currentTimeJumpFrantic = _canCooldownAttackJumpFrantic / 2;
             _currentTimeSmoke = _canCooldownAttackSmoke / 2;
             _currentTimeVortex = _canCooldownAttackVortex / 2;
 
@@ -207,9 +237,20 @@ namespace Scripts
                 }
             }
 
-            _jumpFranticView.fillAmount = _currentTimeJumpFrantic / _canCooldownAttackJumpFrantic;
-            _smokeView.fillAmount = _currentTimeSmoke / _canCooldownAttackSmoke;
-            _vortexView.fillAmount = _currentTimeVortex / _canCooldownAttackVortex;
+            if(UnlockSpells.First)
+                _jumpFranticView.fillAmount = _currentTimeJumpFrantic / _canCooldownAttackJumpFrantic;
+            else
+                _jumpFranticView.fillAmount = 1;
+            
+            if(UnlockSpells.Second)
+                _smokeView.fillAmount = _currentTimeSmoke / _canCooldownAttackSmoke;
+            else
+                _smokeView.fillAmount = 1;
+            
+            if(UnlockSpells.Three)
+                _vortexView.fillAmount = _currentTimeVortex / _canCooldownAttackVortex;
+            else
+                _vortexView.fillAmount = 1;
             
             _stateMachine?.OnUpdate();
         }
