@@ -17,31 +17,20 @@ public class EnemySpawner : MonoBehaviour
     private void Start()
     {
         failSpawn = true;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (!failSpawn)
-            return;
         
         StartCoroutine(spawnFunc);
     }
 
     IEnumerator Spawn() 
     {
-        int enemyIndex = RandomBetweenFloor(0, enemyList.Count);
-        GameObject enemyToSpawn = enemyList[enemyIndex]; 
-        failSpawn = true; 
-        Vector3 spot = RandomBetweenFloor(point1, point2);
-        failSpawn = CheckForPlayer(spot);
-        if (!failSpawn) 
+        while (true)
         {
+            int enemyIndex = RandomBetweenFloor(0, enemyList.Count);
+            GameObject enemyToSpawn = enemyList[enemyIndex]; 
+            Vector3 spot = RandomBetweenFloor(point1, point2);
             Instantiate(enemyToSpawn, spot, Quaternion.identity, this.transform);
+            yield return new WaitForSeconds(timeoutInSeconds);
         }
-        yield return new WaitForSeconds(timeoutInSeconds);
-
-        failSpawn = true;
     }
 
     int RandomBetweenFloor(float min, float max) 
@@ -56,13 +45,5 @@ public class EnemySpawner : MonoBehaviour
             Mathf.Lerp(min.y, max.y, Random.value),
             Mathf.Lerp(min.z, max.z, Random.value)
         );
-    }
-
-    bool CheckForPlayer(Vector3 here)
-    {
-        Collider2D[] groundColliders = Physics2D.OverlapCircleAll(here,
-            radiusOfPlayerSafety, 
-            layer);
-        return groundColliders.Length > 0;
     }
 }

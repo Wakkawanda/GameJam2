@@ -26,6 +26,7 @@ namespace Scripts
         [SerializeField] private float _canCooldownAttackJumpFrantic = 5;
         [SerializeField] private float _canCooldownAttackSmoke = 7;
         [SerializeField] private float _canCooldownAttackVortex = 10;
+        [SerializeField] private SpriteRenderer _spriteRenderer;
         public float hurtTimer;
         public bool isHurt = false;
         public float radiusCheck = 3f;
@@ -131,15 +132,23 @@ namespace Scripts
         public IEnumerator DamageTimer() 
         {
             isHurt = true;
-            yield return new WaitForSeconds(hurtTimer);
-            isHurt = false;
-            Collider2D[] enemyColliders = Physics2D.OverlapCircleAll(transform.position,
-                radiusCheck, 
-                enemyLayer);
-            if (enemyColliders.Length > 0)
-            { 
-                TakeDamage();
+            float timer = 0;
+            
+            while (timer < hurtTimer)
+            {
+                _spriteRenderer.color = new Color32(255, 255, 255, 255);
+                
+                yield return new WaitForSeconds(hurtTimer / 8);
+                
+                _spriteRenderer.color = new Color32(255, 255, 255, 145);
+                
+                yield return new WaitForSeconds(hurtTimer / 8);
+
+                timer += hurtTimer / 4;
             }
+            
+            isHurt = false;
+            _spriteRenderer.color = new Color32(255, 255, 255, 255);
         }
 
         private void OnUpdate()

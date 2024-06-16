@@ -257,7 +257,8 @@ MonoBehaviour:
   _canCooldownAttackJumpFrantic: 5
   _canCooldownAttackSmoke: 7
   _canCooldownAttackVortex: 10
-  hurtTimer: 1
+  _spriteRenderer: {fileID: 3157880269293970252}
+  hurtTimer: 1.5
   isHurt: 0
   radiusCheck: 1.5
   enemyLayer:
