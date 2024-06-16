@@ -17,6 +17,7 @@ namespace weed
         [SerializeField] private GameObject _canvas;
         [SerializeField] private CanvasGroup _endedCanvas;
         [SerializeField] private int _imageIndex = 0;
+        [SerializeField] private int _indexToStopAt = 0;
         [SerializeField] private Button _buyButton;
         [SerializeField] private TextMeshProUGUI _pricesText;
         [SerializeField] private TextMeshProUGUI _walletMoney;
@@ -25,7 +26,7 @@ namespace weed
         [SerializeField] private Button _skipButton;
         
         private Wallet _wallet;
-
+        private bool reachedThePoint = false;
         public static int Prices = 100;
 
         [Inject]
@@ -130,6 +131,23 @@ namespace weed
             // StartCoroutine(SwitchImageOnInput());
             StartCoroutine("SwitchImageAuto");
             // fade in/out
+
+            // todo play until the necessary one
+            // pause at that; after work/??? continue playing
+            // when last is reached we go to game
+        }
+
+        private void EnableUI() 
+        {
+            // code here that will show us the magazine ui...
+        }
+
+        private void DisableUI() 
+        {
+            // the opposite of enable UI...
+            // trigger this when shopping is done,
+            // and after this also trigger switchImageAuto again
+
         }
 
         private IEnumerator SwitchImageAuto() 
@@ -146,7 +164,19 @@ namespace weed
                 
                 // get next what we got
                 _imagesObject.GetComponent<Image>().sprite = _images[_imageIndex];
-                _imageIndex = (_imageIndex + 1) % _images.Count;
+                _imageIndex = (_imageIndex + 1);
+                
+                if (_imageIndex > _images.Count)
+                {
+                    StartCoroutine(ToGame());
+                }
+
+                if (_imageIndex == _indexToStopAt) 
+                {
+                    reachedThePoint = true;
+                    EnableUI();
+                    yield break;
+                }
             }
             StartCoroutine("SwitchImageAuto");  // loop
         }
