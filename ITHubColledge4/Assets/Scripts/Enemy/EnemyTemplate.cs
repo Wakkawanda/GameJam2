@@ -13,6 +13,7 @@ namespace Enemy
         [SerializeField] private Player player;
         private GameObject playerObject;
         [SerializeField] private NavMeshAgent agent;
+        [SerializeField] private GameObject bloodFX;
         // enemy type here maybe? i.e. melee or long-range or whatever
         // pick attack from enemy type 
 
@@ -62,6 +63,7 @@ namespace Enemy
 
         private void Die()
         {
+            Instantiate(bloodFX, this.transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
         

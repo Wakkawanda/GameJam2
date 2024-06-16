@@ -158,6 +158,15 @@ namespace Scripts
             
             isHurt = false;
             _spriteRenderer.color = new Color32(255, 255, 255, 255);
+
+            // this is a small check if player is hugging enemies
+            Collider2D[] enemyColliders = Physics2D.OverlapCircleAll(transform.position,
+                radiusCheck,
+                enemyLayer);
+            if (enemyColliders.Length > 0)
+            {
+                TakeDamage();
+            }
         }
 
         private void OnUpdate()
