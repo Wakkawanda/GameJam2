@@ -428,6 +428,7 @@ namespace Scripts
 
                 foreach (var enemy in enemiesHit)
                 {
+                    _hit.Play();
                     if (enemy.TryGetComponent(out EnemyTemplate health))
                     {
                         health.TakeDamage(0);

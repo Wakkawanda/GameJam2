@@ -787,6 +787,8 @@ MonoBehaviour:
   _myHit: {fileID: 7947883803237057227}
   _smoke: {fileID: 3974439302854050228}
   _cinemachineVirtual: {fileID: 0}
+  _enemySpawner: {fileID: 0}
+  _canvas: {fileID: 0}
   hurtTimer: 1.5
   isHurt: 0
   radiusCheck: 1.5
@@ -828,7 +830,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.065463066, y: -0.010910511}
+  m_Offset: {x: 0.06688905, y: -0.038003698}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -839,7 +841,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.72427416, y: 1.2411108}
+  m_Size: {x: 0.5274917, y: 0.7990633}
   m_EdgeRadius: 0
 --- !u!95 &7899398200880208730
 Animator:

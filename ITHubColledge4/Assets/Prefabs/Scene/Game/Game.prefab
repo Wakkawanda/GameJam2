@@ -894,6 +894,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6104685100770105846}
     - target: {fileID: 2136991256644693000, guid: 68205b43fa50b8649b658ac373922326, type: 3}
+      propertyPath: hurtTimer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2136991256644693000, guid: 68205b43fa50b8649b658ac373922326, type: 3}
       propertyPath: _smokeView
       value: 
       objectReference: {fileID: 562785882614124366}

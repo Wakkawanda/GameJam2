@@ -95,17 +95,17 @@ namespace weed
             if (!UnlockSpells.Three && UnlockSpells.Second && UnlockSpells.First)
             {
                 UnlockSpells.Three = true;
-                Prices = 600;
+                Prices = 250;
             }
             if (!UnlockSpells.Second && UnlockSpells.First)
             {
                 UnlockSpells.Second = true;
-                Prices = 400;
+                Prices = 200;
             }
             if (!UnlockSpells.First)
             {
                 UnlockSpells.First = true;
-                Prices = 200;
+                Prices = 150;
             }
 
             StartCoroutine(ToGame());

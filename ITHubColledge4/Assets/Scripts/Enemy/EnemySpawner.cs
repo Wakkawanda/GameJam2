@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using Enemy;
+using Scripts;
 using UnityEngine;
 using weed;
+using Zenject;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -20,9 +21,16 @@ public class EnemySpawner : MonoBehaviour
 
     [SerializeField] private float contDiff = 0;
     [SerializeField] private int beginDiff = 0;
+    private Wallet _wallet;
 
     // check timer && overtime is harder
     // each First/secnod/third aiblity makes more mobs at spawn
+
+    [Inject]
+    public void Construct(Wallet wallet)
+    {
+        _wallet = wallet;
+    }
 
     private void Start()
     {
@@ -40,6 +48,11 @@ public class EnemySpawner : MonoBehaviour
     {
         while (true)
         {
+            if (_wallet.GetMoneyValue() > Barman.Prices)
+            {
+                contDiff += 2;
+            }
+            
             contDiff += Time.fixedDeltaTime;
             yield return new WaitForSeconds(
                 Mathf.Max(timeoutInSeconds - contDiff, 0.5f)
