@@ -15,6 +15,8 @@ namespace Scripts
         [SerializeField] private Transform _attackPoint;
         [SerializeField] private LayerMask _enemyLayer;
         [SerializeField] private float _attackSize = 5;
+        [SerializeField] private AudioSource _hit;
+
 
         public bool IsAttack { get; set; }
 
@@ -41,6 +43,7 @@ namespace Scripts
 
                 foreach (var enemy in enemiesHit)
                 {
+                    _hit.Play();
                     if (enemy.TryGetComponent(out EnemyTemplate health))
                     {
                         health.TakeDamage(0);

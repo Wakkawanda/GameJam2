@@ -35,6 +35,7 @@ namespace Scripts
         [SerializeField] private Image _jumpFranticViewLock;
         [SerializeField] private Image _smokeViewLock;
         [SerializeField] private Image _vortexViewLock;
+        [SerializeField] private AudioSource _miss;
         public float hurtTimer;
         public bool isHurt = false;
         public float radiusCheck = 3f;
@@ -275,6 +276,7 @@ namespace Scripts
             if (_canAttack)
             {
                 ChangeState(AttackState);
+                _miss.Play();
                 _canAttack = false;
             }
         }

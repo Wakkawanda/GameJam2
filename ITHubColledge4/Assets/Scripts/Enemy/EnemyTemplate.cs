@@ -56,7 +56,7 @@ namespace Enemy
 
         private void Death()
         {
-            _wallet.AddMoney(5);
+            _wallet.AddMoney(Random.Range(5, 20));
             Die();
         }
 
