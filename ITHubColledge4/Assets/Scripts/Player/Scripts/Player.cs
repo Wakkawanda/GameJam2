@@ -342,6 +342,8 @@ namespace Scripts
         private IEnumerator GameOver()
         {
             _animator.SetBool("IsDead", true);
+            Weapon.gameObject.SetActive(false);
+            OnDisable();
             
             yield return new WaitForSeconds(0.2f);
             

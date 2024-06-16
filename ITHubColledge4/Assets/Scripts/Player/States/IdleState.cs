@@ -17,9 +17,12 @@ namespace States
 
         public override void OnEnter()
         {
-            Player.Rigidbody2D.velocity = Vector2.zero;
-            _animator.SetBool("isIdle", true);
-            Debug.Log("Idle");
+            if (Player != null)
+            {
+                Player.Rigidbody2D.velocity = Vector2.zero;
+                _animator.SetBool("isIdle", true);
+                Debug.Log("Idle");
+            }
         }
 
         public override void OnUpdate()

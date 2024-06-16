@@ -1,8 +1,5 @@
-using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using Button = UnityEngine.UI.Button;
 
 
@@ -13,7 +10,7 @@ public class buttonLobby : MonoBehaviour
     public void OnEnable(){
         creaters.gameObject.SetActive(false);
 
-        play.onClick.AddListener(() => SceneManager.LoadScene("Game"));
+        play.onClick.AddListener(() => SceneManager.LoadScene("Tavern"));
         exit.onClick.AddListener(Application.Quit);
         autors.onClick.AddListener(AutorsClick);
         autorsexit.onClick.AddListener(AutorsExit);

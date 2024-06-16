@@ -38,7 +38,10 @@ namespace States
         public override void OnUpdate()
         {
             _direction = _playerInput.Player.Move.ReadValue<Vector2>();
-
+            
+            if (Player == null)
+                return;
+            
             if (_direction.x < 0)
             {
                 Player.transform.localScale = new Vector3(-1, 1, 1);
@@ -67,7 +70,8 @@ namespace States
 
         private void Mover()
         {
-            Player.Rigidbody2D.MovePosition(Player.Rigidbody2D.position + _direction * Player.Speed * Time.fixedDeltaTime);
+            if (Player != null)
+                Player.Rigidbody2D.MovePosition(Player.Rigidbody2D.position + _direction * Player.Speed * Time.fixedDeltaTime);
         }
     }
 }

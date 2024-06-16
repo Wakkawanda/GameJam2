@@ -1,3 +1,4 @@
+using System;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Enemy;
@@ -18,6 +19,11 @@ namespace Scripts
         [SerializeField] private AudioSource _hit;
 
         public bool IsAttack { get; set; }
+
+        private void OnDisable()
+        {
+            transform.DOKill();
+        }
 
         private void OnDrawGizmos()
         {

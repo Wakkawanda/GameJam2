@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
@@ -13,10 +14,19 @@ namespace ShakerText
         [SerializeField] private float _beatInterval = 0.5f;
 
         private float _timer;
+        private Tweener _tweener;
 
         private void Start()
         {
             _timer = _beatInterval;
+        }
+
+        private void OnDisable()
+        {
+            foreach (Image image in _textImage)
+            {
+                image.transform.DOKill();
+            }
         }
 
         private void Update()
