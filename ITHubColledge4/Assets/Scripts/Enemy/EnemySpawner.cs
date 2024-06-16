@@ -11,6 +11,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private Vector3 point1; // maybe gameobject?
     [SerializeField] private LayerMask layer;
     [SerializeField] private Vector3 point2;
+    [SerializeField] private GameObject smokeFX;
     private readonly string spawnFunc = "Spawn";
     private bool failSpawn = true;
 
@@ -28,6 +29,7 @@ public class EnemySpawner : MonoBehaviour
             int enemyIndex = RandomBetweenFloor(0, enemyList.Count);
             GameObject enemyToSpawn = enemyList[enemyIndex]; 
             Vector3 spot = RandomBetweenFloor(point1, point2);
+            Instantiate(smokeFX, spot, Quaternion.identity);
             Instantiate(enemyToSpawn, spot, Quaternion.identity, this.transform);
             yield return new WaitForSeconds(timeoutInSeconds);
         }
