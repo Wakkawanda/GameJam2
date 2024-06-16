@@ -14,6 +14,7 @@ namespace weed
         [SerializeField] private List<int> _prices;
         [SerializeField] private List<Sprite> _images; // cutscene ones
         [SerializeField] private GameObject _imagesObject; // cutscene ones
+        [SerializeField] private CanvasGroup _canvasGroup; // cutscene ones
         [SerializeField] private int _imageIndex = 0;
         [SerializeField] private List<Button> _buttons;
         [SerializeField] private TextMeshProUGUI _pricesText;
@@ -103,16 +104,52 @@ namespace weed
         {
             // StartCoroutine(SwitchImageOnInput());
             StartCoroutine("SwitchImageAuto");
+            // fade in/out
         }
 
         private IEnumerator SwitchImageAuto() 
         {
             foreach (Sprite sprite in _images)
-            {   // this is barely different
-                yield return new WaitForSeconds(1f);
+            {
+                // show what we got
+                FadeIn(_canvasGroup, 1f);
+                yield return new WaitForSeconds(2f);
+                
+                // hide what we got
+                FadeOut(_canvasGroup, 1f);
+                yield return new WaitForSeconds(2f);
+                
+                // get next what we got
                 _imagesObject.GetComponent<Image>().sprite = _images[_imageIndex];
                 _imageIndex = (_imageIndex + 1) % _images.Count;
             }
+            StartCoroutine("SwitchImageAuto");  // loop
+        }
+
+        private IEnumerator Fade(CanvasGroup c, float startAlpha, float endAlpha, float time)
+        {
+            float startTime = Time.time;
+
+            while (Time.time - startTime < time)
+            {
+                float t = (Time.time - startTime) / time;
+                t = t * t * (3f - 2f * t); // smoothstep function
+                float currentAlpha = Mathf.MoveTowards(startAlpha, endAlpha, t);
+                c.alpha = currentAlpha;
+                yield return null;
+            }
+
+            c.alpha = endAlpha;
+        }
+
+        public void FadeIn(CanvasGroup c, float time)
+        {
+            StartCoroutine(Fade(c, 0f, 1f, time));
+        }
+
+        public void FadeOut(CanvasGroup c, float time)
+        {
+            StartCoroutine(Fade(c, 1f, 0f, time));
         }
 
         private IEnumerator SwitchImageOnInput() {  // todo?

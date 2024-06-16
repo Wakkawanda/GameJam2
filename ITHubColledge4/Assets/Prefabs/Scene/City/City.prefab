@@ -1035,6 +1035,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6085552056503490667}
   - component: {fileID: 7672580040872010432}
+  - component: {fileID: 8946076545264491972}
   - component: {fileID: 1416093661047595313}
   - component: {fileID: 3060280519561842886}
   m_Layer: 0
@@ -1090,6 +1091,18 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!225 &8946076545264491972
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3995366541002173988}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!114 &1416093661047595313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1212,10 +1225,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _prices: 640000002c010000bc020000e8030000dc050000
   _images:
-  - {fileID: -437363867770992897, guid: d220f8c26bb5eda44aff8a05a2129218, type: 3}
+  - {fileID: -1545569237, guid: d220f8c26bb5eda44aff8a05a2129218, type: 3}
   - {fileID: -761051142, guid: d220f8c26bb5eda44aff8a05a2129218, type: 3}
   - {fileID: -812073532, guid: d220f8c26bb5eda44aff8a05a2129218, type: 3}
   _imagesObject: {fileID: 5180872294770377058}
+  _canvasGroup: {fileID: 8946076545264491972}
   _imageIndex: 0
   _buttons:
   - {fileID: 4465808476201212908}
