@@ -370,6 +370,7 @@ namespace Scripts
             _animator.SetBool("IsDead", true);
             Weapon.gameObject.SetActive(false);
             OnDisable();
+            ChangeState(KilledState);
             
             yield return new WaitForSeconds(0.2f);
             
