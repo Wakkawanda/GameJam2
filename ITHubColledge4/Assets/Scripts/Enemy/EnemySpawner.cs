@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using weed;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -15,10 +16,23 @@ public class EnemySpawner : MonoBehaviour
     private readonly string spawnFunc = "Spawn";
     private bool failSpawn = true;
 
+    private float contDiff = 0;
+    private int beginDiff = 0;
+
+    // check timer && overtime is harder
+    // each First/secnod/third aiblity makes more mobs at spawn
+
     private void Start()
     {
         failSpawn = true;
         
+        // this shit will be theoretical
+        if (UnlockSpells.First) beginDiff++;
+        if (UnlockSpells.Second) beginDiff++;
+        if (UnlockSpells.Three) beginDiff++;
+        
+
+
         StartCoroutine(spawnFunc);
     }
 
@@ -26,12 +40,16 @@ public class EnemySpawner : MonoBehaviour
     {
         while (true)
         {
-            int enemyIndex = RandomBetweenFloor(0, enemyList.Count);
-            GameObject enemyToSpawn = enemyList[enemyIndex]; 
-            Vector3 spot = RandomBetweenFloor(point1, point2);
-            Instantiate(smokeFX, spot + new Vector3(0,0,-3), Quaternion.identity);
-            Instantiate(enemyToSpawn, spot, Quaternion.identity, this.transform);
-            yield return new WaitForSeconds(timeoutInSeconds);
+            for (int i = 0; i < beginDiff + 1; i++) 
+            {
+                int enemyIndex = RandomBetweenFloor(0, enemyList.Count);
+                GameObject enemyToSpawn = enemyList[enemyIndex]; 
+                Vector3 spot = RandomBetweenFloor(point1, point2);
+                Instantiate(smokeFX, spot + new Vector3(0,0,-3), Quaternion.identity);
+                Instantiate(enemyToSpawn, spot, Quaternion.identity, this.transform);
+            } 
+            contDiff += Time.deltaTime;
+            yield return new WaitForSeconds(Mathf.Max(timeoutInSeconds - (contDiff) * 0.1f), 0);
         }
     }
 
