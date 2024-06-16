@@ -1588,6 +1588,7 @@ MonoBehaviour:
   _canvas: {fileID: 116275076778744168}
   _endedCanvas: {fileID: 2553121630518805118}
   _imageIndex: 0
+  _indexToStopAt: 0
   _buyButton: {fileID: 7319517746933478947}
   _pricesText: {fileID: 3298621810826517491}
   _walletMoney: {fileID: 7645753234847271737}

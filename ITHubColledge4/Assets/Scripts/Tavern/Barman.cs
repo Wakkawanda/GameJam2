@@ -11,13 +11,14 @@ namespace weed
 {
     public class Barman : MonoBehaviour
     {
-        [SerializeField] private List<Sprite> _images; // cutscene ones
+        [SerializeField] private List<Sprite> _imagesFirstCutscene; // cutscene ones
+        [SerializeField] private List<Sprite> _imagesRepeatingCutscene; // cutscene ones
         [SerializeField] private GameObject _imagesObject; // cutscene ones
         [SerializeField] private CanvasGroup _canvasGroup; // cutscene ones
         [SerializeField] private GameObject _canvas;
         [SerializeField] private CanvasGroup _endedCanvas;
         [SerializeField] private int _imageIndex = 0;
-        [SerializeField] private int _indexToStopAt = 0;
+        [SerializeField] private int _imageIndexToStopAt = 0;
         [SerializeField] private Button _buyButton;
         [SerializeField] private TextMeshProUGUI _pricesText;
         [SerializeField] private TextMeshProUGUI _walletMoney;
@@ -26,7 +27,6 @@ namespace weed
         [SerializeField] private Button _skipButton;
         
         private Wallet _wallet;
-        private bool reachedThePoint = false;
         public static int Prices = 100;
 
         [Inject]
@@ -81,7 +81,11 @@ namespace weed
 
         private void Start()
         {
-            GoThroughImages();
+            int? firstTimer = _wallet.GetFirstCutscene();
+            if (firstTimer == null) firstTimer = 1;
+            bool makingSure = firstTimer > 0 ? true : false;
+
+            GoThroughImages(makingSure);
         }
 
         private void OnEnable()
@@ -126,10 +130,10 @@ namespace weed
             StartCoroutine(ToGame());
         }
 
-        private void GoThroughImages() 
+        private void GoThroughImages(bool first) 
         {
             // StartCoroutine(SwitchImageOnInput());
-            StartCoroutine("SwitchImageAuto");
+            StartCoroutine("SwitchImageAuto", first);
             // fade in/out
 
             // todo play until the necessary one
@@ -150,35 +154,36 @@ namespace weed
 
         }
 
-        private IEnumerator SwitchImageAuto() 
+        private IEnumerator SwitchImageAuto(bool first) 
         {
-            foreach (Sprite sprite in _images)
-            {
+            var currentImages = first ? _imagesFirstCutscene : _imagesRepeatingCutscene;
+            foreach (Sprite sprite in currentImages)
+            {                
+                // get next what we got
+                _imagesObject.GetComponent<Image>().sprite = currentImages[_imageIndex];
+                _imageIndex = (_imageIndex + 1);
+
+                // if we get too much go to game
+                if (_imageIndex > currentImages.Count)
+                {
+                    _wallet.SetFirstCutscene(0);
+                    StartCoroutine(ToGame());
+                }
+
                 // show what we got
                 FadeIn(_canvasGroup, 1f);
                 yield return new WaitForSeconds(2f);
                 
+                // if this is our stop we stop
+                if (!first && _imageIndex == _imageIndexToStopAt) yield break;
+
                 // hide what we got
                 FadeOut(_canvasGroup, 1f);
                 yield return new WaitForSeconds(2f);
-                
-                // get next what we got
-                _imagesObject.GetComponent<Image>().sprite = _images[_imageIndex];
-                _imageIndex = (_imageIndex + 1);
-                
-                if (_imageIndex > _images.Count)
-                {
-                    StartCoroutine(ToGame());
-                }
 
-                if (_imageIndex == _indexToStopAt) 
-                {
-                    reachedThePoint = true;
-                    EnableUI();
-                    yield break;
-                }
+
             }
-            StartCoroutine("SwitchImageAuto");  // loop
+            StartCoroutine("SwitchImageAuto", false);  // loop
         }
 
         private IEnumerator Fade(CanvasGroup c, float startAlpha, float endAlpha, float time)
@@ -209,8 +214,8 @@ namespace weed
 
         private IEnumerator SwitchImageOnInput() {  // todo?
             yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
-            _imagesObject.GetComponent<Image>().sprite = _images[_imageIndex];
-            _imageIndex = (_imageIndex + 1) % _images.Count;
+            // _imagesObject.GetComponent<Image>().sprite = _images[_imageIndex];
+            // _imageIndex = (_imageIndex + 1) % _images.Count;
         }
 
         private IEnumerator ToGame()
