@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using weed;
 using Zenject;
 
 namespace Scripts
@@ -22,10 +23,19 @@ namespace Scripts
         [SerializeField] private Transform _attackPoint;
         [SerializeField] private LayerMask _enemyLayer;
         [SerializeField] private float _attackSize = 5;
+        [SerializeField] private float _attackVortexSize = 2;
         [SerializeField] private float _canCooldownAttack = 0.5f;
         [SerializeField] private float _canCooldownAttackJumpFrantic = 5;
         [SerializeField] private float _canCooldownAttackSmoke = 7;
         [SerializeField] private float _canCooldownAttackVortex = 10;
+        [SerializeField] private SpriteRenderer _spriteRenderer;
+        [SerializeField] private Image _jumpFranticView;
+        [SerializeField] private Image _smokeView;
+        [SerializeField] private Image _vortexView;
+        [SerializeField] private Image _jumpFranticViewLock;
+        [SerializeField] private Image _smokeViewLock;
+        [SerializeField] private Image _vortexViewLock;
+        [SerializeField] private AudioSource _miss;
         public float hurtTimer;
         public bool isHurt = false;
         public float radiusCheck = 3f;
@@ -35,6 +45,7 @@ namespace Scripts
         private CompositeDisposable _disposable;
         private PlayerInput _playerInput;
         private Wallet _wallet;
+        private bool _isVortex;
         private float _currentTimeAttack;
         private float _currentTimeJumpFrantic;
         private float _currentTimeSmoke;
@@ -67,9 +78,36 @@ namespace Scripts
         private void OnEnable()
         {
             _playerInput.Player.Attack.canceled += Attack;
-            _playerInput.Player.JumpFrantic.canceled += JumpFrantic;
-            _playerInput.Player.Smoke.canceled += Smoke;
-            _playerInput.Player.Vortex.canceled += Vortex;
+
+            if (UnlockSpells.First)
+            {
+                _playerInput.Player.JumpFrantic.canceled += JumpFrantic;
+                _jumpFranticViewLock.gameObject.SetActive(false);
+            }
+            else
+            {
+                _jumpFranticViewLock.gameObject.SetActive(true);
+            }
+            
+            if (UnlockSpells.Second)
+            {
+                _playerInput.Player.Smoke.canceled += Smoke;
+                _smokeViewLock.gameObject.SetActive(false);
+            }
+            else
+            {
+                _smokeViewLock.gameObject.SetActive(true);
+            }
+            
+            if (UnlockSpells.Three)
+            {
+                _playerInput.Player.Vortex.canceled += Vortex;
+                _vortexViewLock.gameObject.SetActive(false);
+            }
+            else
+            {
+                _vortexViewLock.gameObject.SetActive(true);
+            }
         }
 
         private void OnDisable()
@@ -83,6 +121,9 @@ namespace Scripts
         private void Start()
         {
             InitializeStates();
+
+            _currentTimeSmoke = _canCooldownAttackSmoke / 2;
+            _currentTimeVortex = _canCooldownAttackVortex / 2;
 
             _disposable?.Dispose();
             _disposable = new CompositeDisposable();
@@ -131,13 +172,30 @@ namespace Scripts
         public IEnumerator DamageTimer() 
         {
             isHurt = true;
-            yield return new WaitForSeconds(hurtTimer);
+            float timer = 0;
+            
+            while (timer < hurtTimer)
+            {
+                _spriteRenderer.color = new Color32(255, 255, 255, 255);
+                
+                yield return new WaitForSeconds(hurtTimer / 8);
+                
+                _spriteRenderer.color = new Color32(255, 255, 255, 145);
+                
+                yield return new WaitForSeconds(hurtTimer / 8);
+
+                timer += hurtTimer / 4;
+            }
+            
             isHurt = false;
+            _spriteRenderer.color = new Color32(255, 255, 255, 255);
+
+            // this is a small check if player is hugging enemies
             Collider2D[] enemyColliders = Physics2D.OverlapCircleAll(transform.position,
-                radiusCheck, 
+                radiusCheck,
                 enemyLayer);
             if (enemyColliders.Length > 0)
-            { 
+            {
                 TakeDamage();
             }
         }
@@ -188,6 +246,21 @@ namespace Scripts
                     _currentTimeVortex = 0;
                 }
             }
+
+            if(UnlockSpells.First)
+                _jumpFranticView.fillAmount = _currentTimeJumpFrantic / _canCooldownAttackJumpFrantic;
+            else
+                _jumpFranticView.fillAmount = 1;
+            
+            if(UnlockSpells.Second)
+                _smokeView.fillAmount = _currentTimeSmoke / _canCooldownAttackSmoke;
+            else
+                _smokeView.fillAmount = 1;
+            
+            if(UnlockSpells.Three)
+                _vortexView.fillAmount = _currentTimeVortex / _canCooldownAttackVortex;
+            else
+                _vortexView.fillAmount = 1;
             
             _stateMachine?.OnUpdate();
         }
@@ -212,6 +285,7 @@ namespace Scripts
             if (_canAttack)
             {
                 ChangeState(AttackState);
+                _miss.Play();
                 _canAttack = false;
             }
         }
@@ -238,7 +312,8 @@ namespace Scripts
         {
             if (_canAttackVortex)
             {
-                ChangeState(VortexState);
+                _animator.SetTrigger("Vortex");
+                Weapon.gameObject.SetActive(false);
                 _canAttackVortex = false;
             }
         }
@@ -264,6 +339,40 @@ namespace Scripts
 
         public void StopJumpFrantic()
         {
+            Weapon.gameObject.SetActive(true);
+            ChangeState(MovingState);
+            Debug.Log("Stop JumpFrantic");
+        }
+
+        public void AttackVortex()
+        {
+            _isVortex = true;
+            StartCoroutine(OnAttackVortex());
+        }
+        
+        private IEnumerator OnAttackVortex()
+        {
+            Debug.Log("Attack JumpFrantic");
+
+            while (_isVortex)
+            {
+                Collider2D[] enemiesHit = Physics2D.OverlapCircleAll(_attackPoint.position, _attackVortexSize, _enemyLayer);
+
+                foreach (var enemy in enemiesHit)
+                {
+                    if (enemy.TryGetComponent(out EnemyTemplate health))
+                    {
+                        health.TakeDamage(0);
+                    }
+                }
+
+                yield return null;
+            }
+        }
+        
+        public void StopVortex()
+        {
+            _isVortex = false;
             Weapon.gameObject.SetActive(true);
             ChangeState(MovingState);
             Debug.Log("Stop JumpFrantic");

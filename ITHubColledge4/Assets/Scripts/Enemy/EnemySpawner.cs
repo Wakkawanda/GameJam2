@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using weed;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -9,39 +10,54 @@ public class EnemySpawner : MonoBehaviour
     [Tooltip("Enemy might spawn on the player; so to avoid that, we'll first check the radius and if the player will be there; if not, we'll spawn the enemy.")]
     [SerializeField] private float radiusOfPlayerSafety;
     [SerializeField] private Vector3 point1; // maybe gameobject?
-    [SerializeField] private LayerMask layer;
+    [SerializeField] private LayerMask playerLayer;
     [SerializeField] private Vector3 point2;
+    [SerializeField] private GameObject smokeFX;
     private readonly string spawnFunc = "Spawn";
     private bool failSpawn = true;
+
+    [SerializeField] private float contDiff = 0;
+    [SerializeField] private int beginDiff = 0;
+
+    // check timer && overtime is harder
+    // each First/secnod/third aiblity makes more mobs at spawn
 
     private void Start()
     {
         failSpawn = true;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (!failSpawn)
-            return;
         
+        // this shit will be theoretical
+        if (UnlockSpells.First) beginDiff++;
+        if (UnlockSpells.Second) beginDiff++;
+        if (UnlockSpells.Three) beginDiff++;
+        
+
+
         StartCoroutine(spawnFunc);
     }
 
     IEnumerator Spawn() 
     {
-        int enemyIndex = RandomBetweenFloor(0, enemyList.Count);
-        GameObject enemyToSpawn = enemyList[enemyIndex]; 
-        failSpawn = true; 
-        Vector3 spot = RandomBetweenFloor(point1, point2);
-        failSpawn = CheckForPlayer(spot);
-        if (!failSpawn) 
+        while (true)
         {
-            Instantiate(enemyToSpawn, spot, Quaternion.identity, this.transform);
+            contDiff += Time.fixedDeltaTime;
+            yield return new WaitForSeconds(
+                Mathf.Max(timeoutInSeconds - contDiff, 0.5f)
+            );
+            for (int i = 0; i < beginDiff + 1; i++) 
+            {
+                int enemyIndex = RandomBetweenFloor(0, enemyList.Count);
+                GameObject enemyToSpawn = enemyList[enemyIndex]; 
+                Vector3 spot = RandomBetweenFloor(point1, point2);
+                failSpawn = CheckForPlayer(spot);
+                if (!failSpawn)
+                {
+                    /*may need adjustments, needs to be >0 Z level for the smoke to not be hidden*/
+                    Instantiate(smokeFX, spot, Quaternion.identity);
+                    Instantiate(enemyToSpawn, spot, Quaternion.identity, this.transform);
+                }
+            } 
         }
-        yield return new WaitForSeconds(timeoutInSeconds);
-
-        failSpawn = true;
     }
 
     int RandomBetweenFloor(float min, float max) 
@@ -60,9 +76,9 @@ public class EnemySpawner : MonoBehaviour
 
     bool CheckForPlayer(Vector3 here)
     {
-        Collider2D[] groundColliders = Physics2D.OverlapCircleAll(here,
-            radiusOfPlayerSafety, 
-            layer);
-        return groundColliders.Length > 0;
+        Collider2D[] playerCollider = Physics2D.OverlapCircleAll(here,
+            radiusOfPlayerSafety,
+            playerLayer);
+        return playerCollider.Length > 0;
     }
 }
