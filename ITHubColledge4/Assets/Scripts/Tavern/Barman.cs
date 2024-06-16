@@ -113,11 +113,11 @@ namespace weed
             }
             
             _imagesObject.GetComponent<Image>().sprite = _imagesRepeatingCutscene[_imagesRepeatingCutscene.Count - 2];
-            FadeIn(_canvasGroup, 0.5f);
+            FadeIn(_canvasGroup, 0.7f);
             yield return new WaitForSeconds(2f);
             
             _imagesObject.GetComponent<Image>().sprite = _imagesRepeatingCutscene[_imagesRepeatingCutscene.Count - 1];
-            FadeIn(_canvasGroup, 0.5f);
+            FadeIn(_canvasGroup, 0.7f);
             yield return new WaitForSeconds(2f);
 
             while (_skipButtonCanvas.alpha < 1)
@@ -172,7 +172,7 @@ namespace weed
                 }
                 
                 // show what we got
-                FadeIn(_canvasGroup, 0.5f);
+                FadeIn(_canvasGroup, 0.7f);
                 
                 if (UnlockSpells.Three && _imageIndex == 3)
                 {
