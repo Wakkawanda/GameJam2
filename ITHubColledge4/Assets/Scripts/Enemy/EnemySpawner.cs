@@ -10,14 +10,14 @@ public class EnemySpawner : MonoBehaviour
     [Tooltip("Enemy might spawn on the player; so to avoid that, we'll first check the radius and if the player will be there; if not, we'll spawn the enemy.")]
     [SerializeField] private float radiusOfPlayerSafety;
     [SerializeField] private Vector3 point1; // maybe gameobject?
-    [SerializeField] private LayerMask layer;
+    [SerializeField] private LayerMask playerLayer;
     [SerializeField] private Vector3 point2;
     [SerializeField] private GameObject smokeFX;
     private readonly string spawnFunc = "Spawn";
     private bool failSpawn = true;
 
-    private float contDiff = 0;
-    private int beginDiff = 0;
+    [SerializeField] private float contDiff = 0;
+    [SerializeField] private int beginDiff = 0;
 
     // check timer && overtime is harder
     // each First/secnod/third aiblity makes more mobs at spawn
@@ -40,18 +40,23 @@ public class EnemySpawner : MonoBehaviour
     {
         while (true)
         {
+            contDiff += Time.fixedDeltaTime;
+            yield return new WaitForSeconds(
+                Mathf.Max(timeoutInSeconds - contDiff, 0.5f)
+            );
             for (int i = 0; i < beginDiff + 1; i++) 
             {
                 int enemyIndex = RandomBetweenFloor(0, enemyList.Count);
                 GameObject enemyToSpawn = enemyList[enemyIndex]; 
                 Vector3 spot = RandomBetweenFloor(point1, point2);
-                Instantiate(smokeFX, spot + new Vector3(0,0,-3), Quaternion.identity);
-                Instantiate(enemyToSpawn, spot, Quaternion.identity, this.transform);
+                failSpawn = CheckForPlayer(spot);
+                if (!failSpawn)
+                {
+                    /*may need adjustments, needs to be >0 Z level for the smoke to not be hidden*/
+                    Instantiate(smokeFX, spot, Quaternion.identity);
+                    Instantiate(enemyToSpawn, spot, Quaternion.identity, this.transform);
+                }
             } 
-            contDiff += Time.deltaTime;
-            yield return new WaitForSeconds(
-                Mathf.Max(timeoutInSeconds - (contDiff) * 0.1f, 0)
-            );
         }
     }
 
@@ -67,5 +72,13 @@ public class EnemySpawner : MonoBehaviour
             Mathf.Lerp(min.y, max.y, Random.value),
             Mathf.Lerp(min.z, max.z, Random.value)
         );
+    }
+
+    bool CheckForPlayer(Vector3 here)
+    {
+        Collider2D[] playerCollider = Physics2D.OverlapCircleAll(here,
+            radiusOfPlayerSafety,
+            playerLayer);
+        return playerCollider.Length > 0;
     }
 }
