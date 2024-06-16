@@ -12,6 +12,9 @@ namespace weed
     public class Barman : MonoBehaviour
     {
         [SerializeField] private List<int> _prices;
+        [SerializeField] private List<Sprite> _images; // cutscene ones
+        [SerializeField] private GameObject _imagesObject; // cutscene ones
+        [SerializeField] private int _imageIndex = 0;
         [SerializeField] private List<Button> _buttons;
         [SerializeField] private TextMeshProUGUI _pricesText;
         [SerializeField] private TextMeshProUGUI _newPricesText;
@@ -46,6 +49,11 @@ namespace weed
             }
             
             _pricesText.text = $"{Prices}";
+        }
+
+        private void Start()
+        {
+            GoThroughImages();
         }
 
         private void OnEnable()
@@ -89,6 +97,28 @@ namespace weed
             }
 
             StartCoroutine(WaitForInputAndSendToHell());
+        }
+
+        private void GoThroughImages() 
+        {
+            // StartCoroutine(SwitchImageOnInput());
+            StartCoroutine("SwitchImageAuto");
+        }
+
+        private IEnumerator SwitchImageAuto() 
+        {
+            foreach (Sprite sprite in _images)
+            {   // this is barely different
+                yield return new WaitForSeconds(1f);
+                _imagesObject.GetComponent<Image>().sprite = _images[_imageIndex];
+                _imageIndex = (_imageIndex + 1) % _images.Count;
+            }
+        }
+
+        private IEnumerator SwitchImageOnInput() {  // todo?
+            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
+            _imagesObject.GetComponent<Image>().sprite = _images[_imageIndex];
+            _imageIndex = (_imageIndex + 1) % _images.Count;
         }
 
         private IEnumerator WaitForInputAndSendToHell()

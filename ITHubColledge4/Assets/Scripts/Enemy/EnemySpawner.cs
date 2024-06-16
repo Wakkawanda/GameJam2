@@ -48,14 +48,18 @@ public class EnemySpawner : MonoBehaviour
             {
                 int enemyIndex = RandomBetweenFloor(0, enemyList.Count);
                 GameObject enemyToSpawn = enemyList[enemyIndex]; 
-                Vector3 spot = RandomBetweenFloor(point1, point2);
-                failSpawn = CheckForPlayer(spot);
-                if (!failSpawn)
-                {
-                    /*may need adjustments, needs to be >0 Z level for the smoke to not be hidden*/
-                    Instantiate(smokeFX, spot, Quaternion.identity);
-                    Instantiate(enemyToSpawn, spot, Quaternion.identity, this.transform);
-                }
+                Vector3 spot = Vector3.zero;
+                int tryAttempts = 0;
+                do {
+                    spot = RandomBetweenFloor(point1, point2);
+                    failSpawn = CheckForPlayer(spot);
+                    tryAttempts++;
+                } while (failSpawn && tryAttempts > 100);
+                if (tryAttempts > 100) Debug.Log("Someone couldn't be lucky enough to get spawned.");
+
+                /*may need adjustments, needs to be >0 Z level for the smoke to not be hidden*/
+                if (!failSpawn) Instantiate(smokeFX, spot, Quaternion.identity);
+                Instantiate(enemyToSpawn, spot, Quaternion.identity, this.transform);
             } 
         }
     }
